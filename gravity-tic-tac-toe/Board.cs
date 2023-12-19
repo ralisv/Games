@@ -6,12 +6,13 @@ static class UI { }
 
 class Game
 {
-    readonly uint Height;
-    readonly uint Width;
+    public readonly uint Height;
+    public readonly uint Width;
+    private readonly List<List<Player?>> Board;
 
-    readonly List<List<Player?>> Board;
+    public Player CurrentPlayer { get; private set; }
 
-    public Game(uint height, uint width)
+    public Game(uint height, uint width, Player? startingPlayer)
     {
         Height = height;
         Width = width;
@@ -24,6 +25,8 @@ class Game
             {
                 Board[row].Add(null);
             }
-        }        
+        }
+
+        CurrentPlayer = startingPlayer ?? Player.X;
     }
 }
