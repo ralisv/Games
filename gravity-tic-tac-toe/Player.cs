@@ -1,4 +1,4 @@
-enum Player {
+enum PlayerSymbol {
     X,
     O
 }
