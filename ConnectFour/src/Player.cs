@@ -9,18 +9,26 @@ enum PlayerSymbol
 }
 
 
-static class Intelligence
+static class Agent
 {
     readonly static PlayerSymbol BotPlayer = PlayerSymbol.O;
 
+    /// <summary>
+    /// Returns the best move for the bot to make.
+    /// </summary>
+    /// <param name="game"> Game instance, Bot should be playing </param>
+    /// <returns></returns>
     public static int GetMove(Game game)
-    // Select the best col based on output of MiniMax
     {
         MiniMax(game, int.MinValue, int.MaxValue, 5, out int bestCol);
         return bestCol;
     }
 
-    public static int Evaluate(Game game)
+    /// <summary>
+    /// Evaluates the current state of the game.
+    /// </summary>
+    /// <param name="game"> Game instance </param>
+    static int Evaluate(Game game)
     {
         if (game.Finished)
         {
@@ -43,7 +51,16 @@ static class Intelligence
         }
     }
 
-    public static int MiniMax(Game game, int alfa, int beta, int depth, out int bestCol)
+    /// <summary>
+    /// Minimax algorithm with alpha-beta pruning.
+    /// </summary>
+    /// <param name="game"> Game instance </param>
+    /// <param name="alfa"> Best possible value for Max node </param>
+    /// <param name="beta"> Best possible value for Min node </param>
+    /// <param name="depth"> Maximum depth the search can reach </param>
+    /// <param name="bestCol"> Column with best results </param>
+    /// <returns></returns>
+    static int MiniMax(Game game, int alfa, int beta, int depth, out int bestCol)
     {
         Random random = new Random();
         bestCol = random.Next(game.Width);

@@ -9,17 +9,53 @@ enum PlayResult
     Next,
 }
 
+/// <summary>
+/// Represents a game of Connect Four
+/// </summary>
 class Game
 {
+    /// <summary>
+    /// Number of rows.
+    /// </summary>
     public readonly int Height;
+
+    /// <summary>
+    /// Number of columns.
+    /// </summary>
     public readonly int Width;
+
+    /// <summary>
+    /// Number of consecutive symbols needed to win.
+    /// </summary>
     public readonly int WinningLength;
+
+    /// <summary>
+    /// The board of the game, carries information about the state of the game.
+    /// </summary>
     public readonly List<List<PlayerSymbol?>> Board;
 
+    /// <summary>
+    /// The player whose turn it is.
+    /// </summary>
     public PlayerSymbol CurrentPlayer { get; private set; }
+
+    /// <summary>
+    /// Stack carrying the history of moves, top of the stack is the most recently used column.
+    /// </summary>
     private Stack<int> history;
+
+    /// <summary>
+    /// Whether the game has finished.
+    /// </summary>
     public bool Finished { get; private set; } = false;
 
+    /// <summary>
+    /// Creates a new game.
+    /// </summary>
+    /// <param name="height"> Number of rows. </param>
+    /// <param name="width"> Number of columns. </param>
+    /// <param name="startingPlayer"> Player who will have the first turn. </param>
+    /// <param name="winningLength"> Number of consecutive symbols needed to win. </param>
     public Game(int height, int width, PlayerSymbol startingPlayer = PlayerSymbol.X, int winningLength = 4)
     {
         Height = height;
@@ -39,7 +75,6 @@ class Game
         WinningLength = winningLength;
 
         history = new();
-
     }
 
     bool IsInBounds(int row, int col)
@@ -47,6 +82,10 @@ class Game
         return row >= 0 && row < Height && col >= 0 && col < Width;
     }
 
+    /// <summary>
+    /// Informs about the result of the game.
+    /// </summary>
+    /// <returns> true if game resulted in draw, false otherwise </returns>
     public bool IsDraw()
     {
         for (int col = 0; col < Width; col++)
@@ -59,6 +98,11 @@ class Game
         return true;
     }
 
+    /// <summary>
+    /// Drops the current player's symbol in the specified column.
+    /// </summary>
+    /// <param name="col">Columns index belonging to [0, Width)</param>
+    /// <returns> Result of operation </returns>
     public PlayResult Play(int col)
     {
         if (!IsInBounds(0, col) | Board[0][col] != null)
@@ -133,6 +177,10 @@ class Game
         return playerCellsInLine == WinningLength;
     }
 
+    /// <summary>
+    /// Undoes the most recently made move.
+    /// </summary>
+    /// <exception cref="System.InvalidOperationException"></exception>
     public void Undo() {
         if (history.Count == 0) {
             throw new System.InvalidOperationException("No moves to undo.");

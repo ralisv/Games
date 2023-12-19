@@ -54,7 +54,7 @@ class Program
     static void BotPlay(Game game, ref int currentCol)
     {
         Thread.Sleep(250);
-        int col = Intelligence.GetMove(game);
+        int col = Agent.GetMove(game);
 
         // Determine the direction of movement
         int step = col > currentCol ? 1 : -1;
