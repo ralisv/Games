@@ -45,7 +45,8 @@ static class Intelligence
 
     public static int MiniMax(Game game, int alfa, int beta, int depth, out int bestCol)
     {
-        bestCol = 0;
+        Random random = new Random();
+        bestCol = random.Next(game.Width);
 
         if (depth == 0 || game.Finished || game.IsDraw())
         {
