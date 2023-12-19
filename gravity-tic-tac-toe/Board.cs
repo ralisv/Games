@@ -13,15 +13,12 @@ class Game
 {
     public readonly int Height;
     public readonly int Width;
-
     public readonly int WinningLength;
-
     public readonly List<List<PlayerSymbol?>> Board;
 
     public PlayerSymbol CurrentPlayer { get; private set; }
-
     private Stack<int> history;
-
+    public bool Finished { get; private set; } = false;
 
     public Game(int height, int width, PlayerSymbol startingPlayer = PlayerSymbol.X, int winningLength = 4)
     {
@@ -50,7 +47,7 @@ class Game
         return row >= 0 && row < Height && col >= 0 && col < Width;
     }
 
-    bool IsDraw()
+    public bool IsDraw()
     {
         for (int col = 0; col < Width; col++)
         {
@@ -83,11 +80,13 @@ class Game
 
         if (HasWon(row, col))
         {
+            Finished = true;
             return PlayResult.Win;
         }
 
         if (IsDraw())
         {
+            Finished = true;
             return PlayResult.Draw;
         }
 
@@ -146,6 +145,13 @@ class Game
                 break;
             }
         }
+
+        if (Finished)
+        {
+            Finished = false;
+            return;
+        }
+
         CurrentPlayer = CurrentPlayer == PlayerSymbol.X ? PlayerSymbol.O : PlayerSymbol.X;
     }
 }

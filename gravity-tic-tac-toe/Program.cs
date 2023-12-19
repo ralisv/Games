@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+
 
 class Program
 {
@@ -47,18 +49,49 @@ class Program
         }
     }
 
+    static void BotPlay(Game game, ref int currentCol)
+    {
+        Thread.Sleep(250);
+        int col = Intelligence.GetMove(game);
+
+        // Determine the direction of movement
+        int step = col > currentCol ? 1 : -1;
+
+        // Move towards the target column with visual feedback
+        while (currentCol != col)
+        {
+            Console.Clear();
+            Console.WriteLine(UI.Game(game, currentCol));
+            Thread.Sleep(300); // Pause for 0.3 seconds
+            currentCol += step;
+        }
+
+        // Play the move
+        PlayResult result = game.Play(col);
+        if (result == PlayResult.Draw)
+        {
+            EndGame(game, "It's a draw!");
+            Environment.Exit(0);
+        }
+        else if (result == PlayResult.Win)
+        {
+            EndGame(game, $"Player {UI.Player(game.CurrentPlayer)} wins!");
+            Environment.Exit(0);
+        }
+    }
+
     static int Main(string[] args)
     {
         bool bot = args.Length != 0 && args[0] == "bot";
 
-        Game game = new Game(6, 7, PlayerSymbol.X, 4);
+        Game game = new Game(8, 8, PlayerSymbol.X, 4);
         int currentCol = 0;
 
         while (true)
         {
             if (bot && game.CurrentPlayer == PlayerSymbol.O)
             {
-                game.Play(Intelligence.GetMove(game));
+                BotPlay(game, ref currentCol);
             }
             else
             {
