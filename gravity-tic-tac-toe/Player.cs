@@ -26,7 +26,7 @@ static class Intelligence
             }
 
             game.Play(col);
-            int value = MiniMax(game, int.MinValue, int.MaxValue, 5);
+            int value = MiniMax(game, int.MinValue, int.MaxValue, 8);
             game.Undo();
 
             if (value > bestValue)
