@@ -42,6 +42,8 @@ class Program
                     EndGame(game, $"Player {UI.Player(game.CurrentPlayer)} wins!");
                     Environment.Exit(0);
                 }
+                Console.Clear();
+                Console.WriteLine(UI.Game(game, currentCol));
                 break;
             case ConsoleKey.Q:
                 Environment.Exit(0);
@@ -62,11 +64,14 @@ class Program
         {
             Console.Clear();
             Console.WriteLine(UI.Game(game, currentCol));
-            Thread.Sleep(300); // Pause for 0.3 seconds
+            Thread.Sleep(300);
             currentCol += step;
         }
 
-        // Play the move
+        Console.Clear();
+        Console.WriteLine(UI.Game(game, currentCol));
+        Thread.Sleep(300);
+
         PlayResult result = game.Play(col);
         if (result == PlayResult.Draw)
         {
