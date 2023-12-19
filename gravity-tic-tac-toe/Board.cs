@@ -92,52 +92,37 @@ class Game
         return CheckCells(row, col, 1, 0) || CheckCells(row, col, 0, 1) || CheckCells(row, col, 1, 1) || CheckCells(row, col, 1, -1);
     }
 
+    int CountCellsInDirection(int row, int col, int rowDelta, int colDelta)
+    // Checks how many players cells are in the direction specified by Delta
+    {
+        int count = 0;
+        for (int i = 1; i < 4; i++)
+        {
+            int newRow = row + rowDelta * i;
+            int newCol = col + colDelta * i;
+
+            if (!IsInBounds(newRow, newCol))
+            {
+                break;
+            }
+
+            PlayerSymbol? cell = Board[newRow][newCol];
+
+            if (cell == CurrentPlayer)
+            {
+                count++;
+                continue;
+            }
+            break;
+        }
+        return count;
+    }
+
     bool CheckCells(int row, int col, int rowDelta, int colDelta)
     // Checks cells in both the direction specified by Delta and the opposite direction
     {
-        int count = 1;
-
-        var symbol = Board[row][col];
-        for (int i = 1; i < 4; i++)
-        {
-            PlayerSymbol? cell = Board[row + rowDelta * i][col + colDelta * i];
-
-            if (cell == CurrentPlayer)
-            {
-                count++;
-                continue;
-            }
-            break;
-        }
-
-        for (int i = 1; i < 4; i++)
-        {
-            PlayerSymbol? cell = Board[row - rowDelta * i][col - colDelta * i];
-
-            if (cell == CurrentPlayer)
-            {
-                count++;
-                continue;
-            }
-            break;
-        }
-
-        return count == WinningLength;
+        int playerCellsInLine = 1 + CountCellsInDirection(row, col, rowDelta, colDelta)
+            + CountCellsInDirection(row, col, -rowDelta, -colDelta);
+        return playerCellsInLine == WinningLength;
     }
-
-    public override string ToString()
-    {
-        var builder = new StringBuilder();
-        for (int row = 0; row < Height; row++)
-        {
-            for (int col = 0; col < Width; col++)
-            {
-                builder.Append(Board[row][col]?.ToString() ?? ".");
-            }
-            builder.AppendLine();
-        }
-        return builder.ToString();
-    }
-
-
 }
