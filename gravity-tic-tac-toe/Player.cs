@@ -16,26 +16,7 @@ static class Intelligence
     public static int GetMove(Game game)
     // Select the best col based on output of MiniMax
     {
-        int bestCol = 0;
-        int bestValue = int.MinValue;
-        for (int col = 0; col < game.Width; col++)
-        {
-            if (game.Board[0][col] != null)
-            {
-                continue;
-            }
-
-            game.Play(col);
-            int value = MiniMax(game, int.MinValue, int.MaxValue, 8);
-            game.Undo();
-
-            if (value > bestValue)
-            {
-                bestValue = value;
-                bestCol = col;
-            }
-
-        }
+        MiniMax(game, int.MinValue, int.MaxValue, 5, out int bestCol);
         return bestCol;
     }
 
@@ -62,12 +43,15 @@ static class Intelligence
         }
     }
 
-    public static int MiniMax(Game game, int alfa, int beta, int depth)
+    public static int MiniMax(Game game, int alfa, int beta, int depth, out int bestCol)
     {
+        bestCol = 0;
+
         if (depth == 0 || game.Finished || game.IsDraw())
         {
             return Evaluate(game);
         }
+
 
         if (game.CurrentPlayer == BotPlayer)
         {
@@ -80,8 +64,14 @@ static class Intelligence
                 }
 
                 game.Play(col);
-                int value = MiniMax(game, alfa, beta, depth - 1);
-                alfa = Math.Max(alfa, value);
+                int value = MiniMax(game, alfa, beta, depth - 1, out int _);
+
+                if (value > alfa)
+                {
+                    alfa = value;
+                    bestCol = col;
+                }
+
                 game.Undo();
 
                 if (beta <= alfa)
@@ -102,8 +92,14 @@ static class Intelligence
                 }
 
                 game.Play(col);
-                int value = MiniMax(game, alfa, beta, depth - 1);
-                beta = Math.Min(beta, value);
+                int value = MiniMax(game, alfa, beta, depth - 1, out int _);
+
+                if (value < beta)
+                {
+                    beta = value;
+                    bestCol = col;
+                }
+
                 game.Undo();
 
                 if (beta <= alfa)
