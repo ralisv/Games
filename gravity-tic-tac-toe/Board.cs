@@ -1,11 +1,17 @@
 using System.Collections.Generic;
-
+using System;
 
 static class UI { }
 
 
 class Game
 {
+    public static enum PlayResult {
+        Again,
+        Draw,
+        Win
+    }
+
     public readonly uint Height;
     public readonly uint Width;
     private readonly List<List<Player?>> Board;
@@ -28,5 +34,14 @@ class Game
         }
 
         CurrentPlayer = startingPlayer ?? Player.X;
+    }
+
+    public PlayResult Play(uint col) {
+        if (col >= Width) {
+            return PlayResult.Again;
+        }
+
+        Board[0][(int)col] = CurrentPlayer;
+        CurrentPlayer = CurrentPlayer == Player.X ? Player.O : Player.X;
     }
 }
