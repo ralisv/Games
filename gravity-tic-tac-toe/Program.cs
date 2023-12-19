@@ -6,6 +6,7 @@ class Program
     {
         Console.Clear();
         Console.WriteLine(UI.Game(game, -1));
+        Console.WriteLine(message);
     }
     
     static int Main()
