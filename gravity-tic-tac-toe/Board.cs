@@ -20,6 +20,9 @@ class Game
 
     public PlayerSymbol CurrentPlayer { get; private set; }
 
+    private Stack<int> history;
+
+
     public Game(int height, int width, PlayerSymbol startingPlayer = PlayerSymbol.X, int winningLength = 4)
     {
         Height = height;
@@ -37,6 +40,9 @@ class Game
 
         CurrentPlayer = startingPlayer;
         WinningLength = winningLength;
+
+        history = new();
+
     }
 
     bool IsInBounds(int row, int col)
@@ -62,6 +68,8 @@ class Game
         {
             return PlayResult.Again;
         }
+
+        history.Push(col);
 
         int row;
         for (row = Height - 1; row >= 0; row--)
@@ -124,5 +132,20 @@ class Game
         int playerCellsInLine = 1 + CountCellsInDirection(row, col, rowDelta, colDelta)
             + CountCellsInDirection(row, col, -rowDelta, -colDelta);
         return playerCellsInLine == WinningLength;
+    }
+
+    public void Undo() {
+        if (history.Count == 0) {
+            throw new System.InvalidOperationException("No moves to undo.");
+        }
+
+        int col = history.Pop();
+        for (int row = 0; row < Height; row++) {
+            if (Board[row][col] != null) {
+                Board[row][col] = null;
+                break;
+            }
+        }
+        CurrentPlayer = CurrentPlayer == PlayerSymbol.X ? PlayerSymbol.O : PlayerSymbol.X;
     }
 }
