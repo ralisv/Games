@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System;
-
-static class UI { }
+using System.Text;
 
 enum PlayResult
 {
@@ -18,7 +16,7 @@ class Game
 
     public readonly int WinningLength;
 
-    private readonly List<List<PlayerSymbol?>> Board;
+    public readonly List<List<PlayerSymbol?>> Board;
 
     public PlayerSymbol CurrentPlayer { get; private set; }
 
@@ -126,4 +124,20 @@ class Game
 
         return count == WinningLength;
     }
+
+    public override string ToString()
+    {
+        var builder = new StringBuilder();
+        for (int row = 0; row < Height; row++)
+        {
+            for (int col = 0; col < Width; col++)
+            {
+                builder.Append(Board[row][col]?.ToString() ?? ".");
+            }
+            builder.AppendLine();
+        }
+        return builder.ToString();
+    }
+
+
 }
