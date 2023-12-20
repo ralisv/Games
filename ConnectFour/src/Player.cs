@@ -11,6 +11,7 @@ enum PlayerSymbol
 
 static class Agent
 {
+    readonly static Random random = new Random();
     readonly static PlayerSymbol BotPlayer = PlayerSymbol.O;
 
     /// <summary>
@@ -20,7 +21,7 @@ static class Agent
     /// <returns></returns>
     public static int GetMove(Game game)
     {
-        MiniMax(game, int.MinValue, int.MaxValue, 5, out int bestCol);
+        MiniMax(game, int.MinValue, int.MaxValue, 8, out int bestCol);
         return bestCol;
     }
 
@@ -47,7 +48,7 @@ static class Agent
         }
         else
         {
-            return 0;
+            return random.Next(0, 50);
         }
     }
 
@@ -62,14 +63,11 @@ static class Agent
     /// <returns></returns>
     static int MiniMax(Game game, int alfa, int beta, int depth, out int bestCol)
     {
-        Random random = new Random();
-        bestCol = random.Next(game.Width);
-
+        bestCol = -1;
         if (depth == 0 || game.Finished || game.IsDraw())
         {
             return Evaluate(game);
         }
-
 
         if (game.CurrentPlayer == BotPlayer)
         {
@@ -124,7 +122,6 @@ static class Agent
                 {
                     break;
                 }
-
             }
             return beta;
         }
