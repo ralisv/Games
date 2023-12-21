@@ -20,9 +20,23 @@ static class UI
     public static string Game(Game game, int cursorRow, int cursorCol)
     {
         var sb = new StringBuilder();
+        // Add top border
+        sb.Append(' ', 1);
+        for (int i = 0; i < game.width; i++)
+        {
+            sb.Append(Player(PlayerId.One));
+            sb.Append(' ');
+        }
+        sb.AppendLine();
+
         for (int row = 0; row < game.height; row++)
         {
             sb.Append(' ', row);
+
+            // Add left border
+            sb.Append(Player(PlayerId.Two));
+            sb.Append(' ');
+
             for (int col = 0; col < game.width; col++)
             {
                 if (row == cursorRow && col == cursorCol)
@@ -35,11 +49,18 @@ static class UI
                 }
                 sb.Append(' ');
             }
+            sb.Append(Player(PlayerId.Two)); // Add right border
             sb.AppendLine();
+        }
+        // Add bottom border
+        sb.Append(' ', game.height + 1);
+        for (int i = 0; i < game.width; i++)
+        {
+            sb.Append(Player(PlayerId.One));
+            sb.Append(' ');
         }
         return sb.ToString();
     }
-
     public static string Cell (Game game, int cursorRow, int cursorCol, int row, int col)
     {
         var hex = game.board[row, col];
