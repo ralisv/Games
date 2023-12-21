@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-enum PlayerId { One, Two }
+public enum PlayerId { One, Two }
 
 
-class Game
+public class Game
 {
     public readonly int width;
     public readonly int height;
@@ -27,6 +27,8 @@ class Game
             }
         }
     }
+
+    private readonly Stack<Hexagon> history = new();
 
     public Game(int width, int height)
     {
@@ -80,6 +82,7 @@ class Game
             return false;
         }
 
+        history.Push(hex);
         hex.Value = CurrentPlayer;
         IsOver = Connects(hex);
         if (!IsOver)
@@ -140,6 +143,16 @@ class Game
         }
 
         return false;
+    }
+
+    public void Undo() {
+        if (IsOver) {
+            IsOver = false;
+        }
+        else {
+            CurrentPlayer = CurrentPlayer == PlayerId.One ? PlayerId.Two : PlayerId.One;
+        }
+        history.Pop().Value = null;
     }
 
 }

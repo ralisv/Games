@@ -1,7 +1,7 @@
 using System;
 
 
-class Hexagon
+public class Hexagon
 {
     /// <summary>
     /// The six directions that a hexagon can be in relation to another hexagon,
