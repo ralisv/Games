@@ -8,6 +8,9 @@ class Game
 
     public readonly Hexagon[,] board;
 
+    public PlayerSymbol CurrentPlayer { get; private set; } = PlayerSymbol.X;
+
+
     public Game(int width, int height)
     {
         this.width = width;
@@ -46,6 +49,19 @@ class Game
         return row >= 0 && row < height && col >= 0 && col < width;
     }
 
+    public bool Play(int row, int col) {
+        if (!IsInBounds(row, col)) {
+            return false;
+        }
 
+        var hex = board[row, col];
+        if (hex.Value != null) {
+            return false;
+        }
+
+        hex.Value = CurrentPlayer;
+        CurrentPlayer = CurrentPlayer == PlayerSymbol.X ? PlayerSymbol.O : PlayerSymbol.X;
+        return true;
+    }
 
 }

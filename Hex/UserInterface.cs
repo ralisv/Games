@@ -3,8 +3,8 @@ using System.Text;
 
 static class UI
 {
-    static string RED = "\u001b[31m";
-    static string BLUE = "\u001b[34m";
+    static string RED = "\x1b[38;2;247;50;50m";
+    static string BLUE = "\x1b[38;2;0;127;255m";
 
     public static string Game(Game game)
     {
@@ -22,7 +22,7 @@ static class UI
                 }
                 else
                 {
-                    sb.Append($"{hex.Value}");
+                    sb.Append(Player(hex.Value.Value));
                 }
             }
             sb.AppendLine();
