@@ -19,8 +19,10 @@ public static class Agent
     /// <param name="destCol"></param>
     /// <param name="row"></param>
     /// <returns></returns>
-    public static List<(int, int)> PathFromCursor(int cursorRow, int cursorCol, int destRow, int destCol)
+    public static List<(int, int)> PathFromCursor((int, int) cursor, (int, int) destination)
     {
+        (int cursorRow, int cursorCol) = cursor;
+        (int destRow, int destCol) = destination;
         List<(int, int)> path = new() { (cursorRow, cursorCol) };
 
         while (cursorCol != destCol || cursorRow != destRow)

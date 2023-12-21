@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 
 public enum PlayerId { One, Two }
@@ -77,72 +76,19 @@ public class Game
         }
 
         var hex = board[row, col];
-        if (hex.Value != null)
+        if (hex.Owner != null)
         {
             return false;
         }
 
         history.Push(hex);
-        hex.Value = CurrentPlayer;
-        IsOver = Connects(hex);
+        hex.Owner = CurrentPlayer;
+        IsOver = hex.Connects();
         if (!IsOver)
         {
             CurrentPlayer = CurrentPlayer == PlayerId.One ? PlayerId.Two : PlayerId.One;
         }
         return true;
-    }
-
-    /// <summary>
-    /// Returns true if the player owning the hexagon has won, false otherwise.
-    /// </summary>
-    /// <returns></returns>
-    public static bool Connects(Hexagon hex)
-    {
-        PlayerId player = hex.Value ?? throw new Exception("Hexagon is not owned by a player");
-        bool upOrLeft = false;
-        bool downOrRight = false;
-
-        // Optimization
-        if (!hex.neighbors.Any(hex => hex?.Value == player))
-        {
-            return false;
-        }
-
-        HashSet<Hexagon> visited = new();
-        Queue<Hexagon> queue = new();
-        queue.Enqueue(hex);
-        while (queue.Count > 0)
-        {
-            var current = queue.Dequeue();
-            if (player == PlayerId.One && current.neighbors[0] == null
-                || player == PlayerId.Two && current.neighbors[2] == null)
-            {
-                upOrLeft = true;
-
-            }
-            else if (player == PlayerId.One && current.neighbors[5] == null
-                || player == PlayerId.Two && current.neighbors[3] == null)
-            {
-                downOrRight = true;
-            }
-
-            if (upOrLeft && downOrRight)
-            {
-                return true;
-            }
-
-            for (int i = 0; i < 6; i++)
-            {
-                var neighbor = current.neighbors[i];
-                if (neighbor != null && visited.Contains(neighbor) == false && neighbor.Value == player)
-                {
-                    visited.Add(neighbor);
-                    queue.Enqueue(neighbor);
-                }
-            }
-        }
-
-        return false;
     }
 
     public void Undo() {
@@ -152,7 +98,19 @@ public class Game
         else {
             CurrentPlayer = CurrentPlayer == PlayerId.One ? PlayerId.Two : PlayerId.One;
         }
-        history.Pop().Value = null;
+        history.Pop().Owner = null;
     }
 
+    public List<Hexagon> PossibleMoves()
+    {
+        List<Hexagon> moves = new();
+        foreach (var hex in board)
+        {
+            if (hex.Owner == null)
+            {
+                moves.Add(hex);
+            }
+        }
+        return moves;
+    }
 }

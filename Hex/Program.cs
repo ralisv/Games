@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Threading;
 
+
 class Program
 {
-    static int Main()
+    static int Main(string[] args)
     {
+        bool playWithBot = args.Length > 0 && args[0] == "bot";
         int cursorRow = 0;
         int cursorCol = 0;
         var game = new Game(7, 7);
@@ -20,21 +22,22 @@ class Program
                 return 0;
             }
 
-            if (game.CurrentPlayer == PlayerId.Two) {
-                (int destRow, int destCol) = Agent.GetMove(game);
-                foreach ((int, int) coord in Agent.PathFromCursor(cursorRow, cursorCol, destRow, destCol))
+            // Bot's turn
+            if (game.CurrentPlayer == PlayerId.Two && playWithBot) {
+                var move = Agent.GetMove(game);
+                foreach ((int cursorRow, int cursorCol) coord in Agent.PathFromCursor((cursorRow, cursorCol), move))
                 {
-                    cursorRow = coord.Item1;
-                    cursorCol = coord.Item2;
                     Thread.Sleep(200);
                     precalculatedBoard = UI.Game(game, cursorRow, cursorCol);
                     Console.Clear();
                     Console.WriteLine(precalculatedBoard);
                 }
+                Thread.Sleep(200);
                 game.Play(cursorRow, cursorCol);
                 continue;
             }
 
+            // Player's turn
             switch (Console.ReadKey().Key) {
                 case ConsoleKey.Q:
                     return 0;

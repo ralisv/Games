@@ -65,9 +65,9 @@ static class UI
     {
         var hex = game.board[row, col];
         bool isAdjacentToCursor = IsAdjacentToCursor(cursorRow, cursorCol, row, col);
-        if (hex.Value != null)
+        if (hex.Owner != null)
         {
-            return $"{Player(hex.Value.Value, highlight: isAdjacentToCursor)}";
+            return $"{Player(hex.Owner.Value, highlight: isAdjacentToCursor)}";
         }
         else
         {
