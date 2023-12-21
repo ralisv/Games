@@ -2,6 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+
+enum PlayerId { One, Two }
+
+
 class Game
 {
     public readonly int width;
@@ -11,6 +15,18 @@ class Game
 
     public PlayerId CurrentPlayer { get; private set; } = PlayerId.One;
 
+    bool _isOver = false;
+    public bool IsOver
+    {
+        get => _isOver;
+        set {
+            _isOver = value;
+            if (value)
+            {
+                Console.WriteLine($"Player {CurrentPlayer} wins!");
+            }
+        }
+    }
 
     public Game(int width, int height)
     {
@@ -25,8 +41,6 @@ class Game
                 board[row, col] = new Hexagon();
             }
         }
-
-        // Set boarders
 
         // Set neighbors
         for (int row = 0; row < width; row++)
@@ -54,7 +68,7 @@ class Game
 
     public bool Play(int row, int col)
     {
-        if (!IsInBounds(row, col))
+        if (!IsInBounds(row, col) || IsOver)
         {
             return false;
         }
@@ -66,7 +80,11 @@ class Game
         }
 
         hex.Value = CurrentPlayer;
-        CurrentPlayer = CurrentPlayer == PlayerId.One ? PlayerId.Two : PlayerId.One;
+        IsOver = Connects(hex);
+        if (!IsOver)
+        {
+            CurrentPlayer = CurrentPlayer == PlayerId.One ? PlayerId.Two : PlayerId.One;
+        }
         return true;
     }
 
@@ -74,7 +92,7 @@ class Game
     /// Returns true if the player owning the hexagon has won, false otherwise.
     /// </summary>
     /// <returns></returns>
-    public bool Connects(Hexagon hex)
+    public static bool Connects(Hexagon hex)
     {
         PlayerId player = hex.Value ?? throw new Exception("Hexagon is not owned by a player");
         bool upOrLeft = false;
@@ -112,7 +130,7 @@ class Game
             for (int i = 0; i < 6; i++)
             {
                 var neighbor = current.neighbors[i];
-                if (neighbor != null && visited.Contains(neighbor) == false)
+                if (neighbor != null && visited.Contains(neighbor) == false && neighbor.Value == player)
                 {
                     visited.Add(neighbor);
                     queue.Enqueue(neighbor);

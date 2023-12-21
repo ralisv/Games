@@ -7,12 +7,19 @@ class Program
     {
         int row = 0;
         int col = 0;
-        var game = new Game(10, 10);
+        var game = new Game(7, 7);
         while (true)
         {   
-            string precalculatedBoard = UI.Game(game, row, col);
+            string PrecalculatedBoard = UI.Game(game, row, col);
             Console.Clear();
-            Console.WriteLine(precalculatedBoard);
+            Console.WriteLine(PrecalculatedBoard);
+
+            if (game.IsOver)
+            {
+                Console.WriteLine($"Player {UI.Player(game.CurrentPlayer)} wins!");
+                return 0;
+            }
+
             switch (Console.ReadKey().Key) {
                 case ConsoleKey.Q:
                     return 0;

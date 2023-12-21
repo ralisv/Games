@@ -1,1 +1,0 @@
-enum PlayerId { One, Two }
