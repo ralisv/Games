@@ -1,5 +1,6 @@
 using System;
-
+using System.Collections.Generic;
+using System.Linq;
 
 class Game
 {
@@ -25,6 +26,8 @@ class Game
             }
         }
 
+        // Set boarders
+
         // Set neighbors
         for (int row = 0; row < width; row++)
         {
@@ -49,19 +52,75 @@ class Game
         return row >= 0 && row < height && col >= 0 && col < width;
     }
 
-    public bool Play(int row, int col) {
-        if (!IsInBounds(row, col)) {
+    public bool Play(int row, int col)
+    {
+        if (!IsInBounds(row, col))
+        {
             return false;
         }
 
         var hex = board[row, col];
-        if (hex.Value != null) {
+        if (hex.Value != null)
+        {
             return false;
         }
 
         hex.Value = CurrentPlayer;
         CurrentPlayer = CurrentPlayer == PlayerId.One ? PlayerId.Two : PlayerId.One;
         return true;
+    }
+
+    /// <summary>
+    /// Returns true if the player owning the hexagon has won, false otherwise.
+    /// </summary>
+    /// <returns></returns>
+    public bool Connects(Hexagon hex)
+    {
+        PlayerId player = hex.Value ?? throw new Exception("Hexagon is not owned by a player");
+        bool upOrLeft = false;
+        bool downOrRight = false;
+
+        // Optimization
+        if (!hex.neighbors.Any(hex => hex?.Value == player))
+        {
+            return false;
+        }
+
+        HashSet<Hexagon> visited = new();
+        Queue<Hexagon> queue = new();
+        queue.Enqueue(hex);
+        while (queue.Count > 0)
+        {
+            var current = queue.Dequeue();
+            if (player == PlayerId.One && current.neighbors[0] == null
+                || player == PlayerId.Two && current.neighbors[2] == null)
+            {
+                upOrLeft = true;
+
+            }
+            else if (player == PlayerId.One && current.neighbors[5] == null
+                || player == PlayerId.Two && current.neighbors[3] == null)
+            {
+                downOrRight = true;
+            }
+
+            if (upOrLeft && downOrRight)
+            {
+                return true;
+            }
+
+            for (int i = 0; i < 6; i++)
+            {
+                var neighbor = current.neighbors[i];
+                if (neighbor != null && visited.Contains(neighbor) == false)
+                {
+                    visited.Add(neighbor);
+                    queue.Enqueue(neighbor);
+                }
+            }
+        }
+
+        return false;
     }
 
 }
