@@ -1,5 +1,12 @@
 using System.Collections.Generic;
-using System.Text;
+
+
+enum PlayerSymbol
+{
+    X,
+    O
+}
+
 
 enum PlayResult
 {

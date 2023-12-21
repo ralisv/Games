@@ -1,12 +1,4 @@
 using System;
-using System.Threading;
-
-
-enum PlayerSymbol
-{
-    X,
-    O
-}
 
 
 static class Agent
