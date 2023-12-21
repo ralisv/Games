@@ -15,7 +15,7 @@ static class UI
     static string BoardBottomRight = "┛";
     static string BoardLeftT = "┣";
     static string BoardRightT = "┫";
-
+    static string Aim = "・";
     public static string Player(PlayerSymbol player)
     {
         return player == PlayerSymbol.X ? RedCell : BlueCell;
@@ -58,7 +58,7 @@ static class UI
         sb.AppendLine();
 
         // Print the board
-        sb.Append(Board(game.Board));
+        sb.Append(Board(game.Board, currentCol));
 
         // Print the bottom border
         sb.Append(BoardBottomLeft);
@@ -72,7 +72,7 @@ static class UI
         return sb.ToString();
     }
 
-    public static string Board(List<List<PlayerSymbol?>> board)
+    public static string Board(List<List<PlayerSymbol?>> board, int currentCol)
     {
         StringBuilder sb = new();
 
@@ -82,7 +82,15 @@ static class UI
             sb.Append(LinePrefix);
             for (int col = 0; col < board[0].Count; col++)
             {
-                sb.Append(Cell(board[row][col]));
+                var cell = board[row][col];
+                if (col == currentCol && cell == null && row % 2 == 1)
+                {
+                    sb.Append(Aim);
+                }
+                else
+                {
+                    sb.Append(Cell(cell));
+                }
             }
             sb.Append(LineSuffix);
             sb.AppendLine();
