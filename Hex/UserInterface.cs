@@ -6,7 +6,7 @@ static class UI
 {
     readonly static string PlayerSymbol = "●";
     readonly static string CursorSymbol = "🞋";
-    readonly static string EmptySymbol = "🞄";
+    readonly static string EmptySymbol = "·";
 
     /// <summary>
     /// Returns a string representation of the game board with the cursor at the

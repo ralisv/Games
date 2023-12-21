@@ -9,9 +9,10 @@ class Program
         int col = 0;
         var game = new Game(10, 10);
         while (true)
-        {
+        {   
+            string precalculatedBoard = UI.Game(game, row, col);
             Console.Clear();
-            Console.WriteLine(UI.Game(game, row, col));
+            Console.WriteLine(precalculatedBoard);
             switch (Console.ReadKey().Key) {
                 case ConsoleKey.Q:
                     return 0;
