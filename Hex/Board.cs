@@ -1,9 +1,10 @@
 using System;
 
 
-class Game {
-    readonly int width;
-    readonly int height;
+class Game
+{
+    public readonly int width;
+    public readonly int height;
 
     public readonly Hexagon[,] board;
 
@@ -15,7 +16,8 @@ class Game {
         board = new Hexagon[width, height];
         for (int row = 0; row < width; row++)
         {
-            for (int col = 0; col < height; col++) {
+            for (int col = 0; col < height; col++)
+            {
                 board[row, col] = new Hexagon();
             }
         }
@@ -23,7 +25,8 @@ class Game {
         // Set neighbors
         for (int row = 0; row < width; row++)
         {
-            for (int col = 0; col < height; col++) {
+            for (int col = 0; col < height; col++)
+            {
                 for (int i = 0; i < 6; i++)
                 {
                     var (rowDelta, colDelta) = Hexagon.AdjacentCoords[i];
@@ -36,8 +39,6 @@ class Game {
                 }
             }
         }
-
-        
     }
 
     public bool IsInBounds(int row, int col)
