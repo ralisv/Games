@@ -1,18 +1,18 @@
 ﻿using System;
-
+using System.Threading;
 
 class Program
 {
     static int Main()
     {
-        int row = 0;
-        int col = 0;
+        int cursorRow = 0;
+        int cursorCol = 0;
         var game = new Game(7, 7);
         while (true)
         {   
-            string PrecalculatedBoard = UI.Game(game, row, col);
+            string precalculatedBoard = UI.Game(game, cursorRow, cursorCol);
             Console.Clear();
-            Console.WriteLine(PrecalculatedBoard);
+            Console.WriteLine(precalculatedBoard);
 
             if (game.IsOver)
             {
@@ -20,23 +20,38 @@ class Program
                 return 0;
             }
 
+            if (game.CurrentPlayer == PlayerId.Two) {
+                (int destRow, int destCol) = Agent.GetMove(game);
+                foreach ((int, int) coord in Agent.PathFromCursor(cursorRow, cursorCol, destRow, destCol))
+                {
+                    cursorRow = coord.Item1;
+                    cursorCol = coord.Item2;
+                    Thread.Sleep(200);
+                    precalculatedBoard = UI.Game(game, cursorRow, cursorCol);
+                    Console.Clear();
+                    Console.WriteLine(precalculatedBoard);
+                }
+                game.Play(cursorRow, cursorCol);
+                continue;
+            }
+
             switch (Console.ReadKey().Key) {
                 case ConsoleKey.Q:
                     return 0;
                 case ConsoleKey.UpArrow:
-                    row = Math.Max(0, row - 1);
+                    cursorRow = Math.Max(0, cursorRow - 1);
                     break;
                 case ConsoleKey.DownArrow:
-                    row = Math.Min(game.height - 1, row + 1);
+                    cursorRow = Math.Min(game.height - 1, cursorRow + 1);
                     break;
                 case ConsoleKey.LeftArrow:
-                    col = Math.Max(0, col - 1);
+                    cursorCol = Math.Max(0, cursorCol - 1);
                     break;
                 case ConsoleKey.RightArrow:
-                    col = Math.Min(game.width - 1, col + 1);
+                    cursorCol = Math.Min(game.width - 1, cursorCol + 1);
                     break;
                 case ConsoleKey.Spacebar:
-                    game.Play(row, col);
+                    game.Play(cursorRow, cursorCol);
                     break;
                 default:
                     continue;
