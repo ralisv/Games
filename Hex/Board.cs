@@ -8,7 +8,7 @@ class Game
 
     public readonly Hexagon[,] board;
 
-    public PlayerSymbol CurrentPlayer { get; private set; } = PlayerSymbol.X;
+    public PlayerId CurrentPlayer { get; private set; } = PlayerId.One;
 
 
     public Game(int width, int height)
@@ -60,7 +60,7 @@ class Game
         }
 
         hex.Value = CurrentPlayer;
-        CurrentPlayer = CurrentPlayer == PlayerSymbol.X ? PlayerSymbol.O : PlayerSymbol.X;
+        CurrentPlayer = CurrentPlayer == PlayerId.One ? PlayerId.Two : PlayerId.One;
         return true;
     }
 

@@ -17,8 +17,8 @@ class Hexagon
         (1, 0),
     };
 
-    private PlayerSymbol? _value = null;
-    public PlayerSymbol? Value
+    private PlayerId? _value = null;
+    public PlayerId? Value
     {
         get
         {

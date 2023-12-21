@@ -3,42 +3,36 @@
 
 class Program
 {
-    static void Main()
+    static int Main()
     {
-        var game = new Game(5, 5);
+        int row = 0;
+        int col = 0;
+        var game = new Game(10, 10);
         while (true)
         {
-            Console.WriteLine(UI.Game(game));
-            Console.WriteLine($"Player {UI.Player(game.CurrentPlayer)}'s turn");
-            Console.WriteLine("Enter row and column to play (e.g. 0 0)");
-            var input = Console.ReadLine();
-            if (input == "q")
-            {
-                break;
-            }
-            var parts = input.Split(' ');
-            if (parts.Length != 2)
-            {
-                Console.WriteLine("Invalid input");
-                continue;
-            }
-            if (!int.TryParse(parts[0], out int row) || !int.TryParse(parts[1], out int col))
-            {
-                Console.WriteLine("Invalid input");
-                continue;
-            }
-            if (!game.Play(row, col))
-            {
-                Console.WriteLine("Invalid move");
-                continue;
-            }
-            if (/* game.IsGameOver() */ false)
-            {
-                Console.WriteLine(UI.Game(game));
-                Console.WriteLine($"Player {UI.Player(game.CurrentPlayer)} wins!");
-                break;
-            }
             Console.Clear();
+            Console.WriteLine(UI.Game(game, row, col));
+            switch (Console.ReadKey().Key) {
+                case ConsoleKey.Q:
+                    return 0;
+                case ConsoleKey.UpArrow:
+                    row = Math.Max(0, row - 1);
+                    break;
+                case ConsoleKey.DownArrow:
+                    row = Math.Min(game.height - 1, row + 1);
+                    break;
+                case ConsoleKey.LeftArrow:
+                    col = Math.Max(0, col - 1);
+                    break;
+                case ConsoleKey.RightArrow:
+                    col = Math.Min(game.width - 1, col + 1);
+                    break;
+                case ConsoleKey.Spacebar:
+                    game.Play(row, col);
+                    break;
+                default:
+                    continue;
+            }
         }
     }
 }

@@ -1,1 +1,1 @@
-enum PlayerSymbol { X, O }
+enum PlayerId { One, Two }
