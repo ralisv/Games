@@ -33,6 +33,7 @@ class Game
         this.width = width;
         this.height = height;
 
+        // Initialize board
         board = new Hexagon[width, height];
         for (int row = 0; row < width; row++)
         {
