@@ -1,17 +1,19 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 
 
 class Program
 {
+    static readonly int Dimension = 12;
+    static readonly int WaitTime = 1000;
+
     static int Main(string[] args)
     {
         bool playWithBot = args.Length > 0 && args[0] == "bot";
         int cursorRow = 0;
         int cursorCol = 0;
-        var game = new Game(8, 8);
-        Agent agent = new(game);
+        var game = new Game(Dimension, Dimension);
+        Agent agent = new(game, WaitTime);
 
         while (true)
         {   
@@ -27,7 +29,7 @@ class Program
 
             // Bot's turn
             if (game.CurrentPlayer == PlayerId.Two && playWithBot) {
-                var move = agent.GetMove(game);
+                var move = agent.GetMove();
 
                 var cursorMoves = Util.PathFromCursor((cursorRow, cursorCol), move);
                 foreach ((int cRow, int cCol) in cursorMoves)
