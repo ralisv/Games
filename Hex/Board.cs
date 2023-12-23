@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 
 public enum PlayerId { One, Two }
@@ -7,10 +8,14 @@ public enum PlayerId { One, Two }
 
 public class Game
 {
+    static readonly Random random = new();
+
     public readonly int width;
     public readonly int height;
 
     public readonly Hexagon[,] board;
+
+    HashSet<(int, int)> freeFields;
 
     public PlayerId CurrentPlayer { get; private set; } = PlayerId.One;
 
@@ -20,19 +25,16 @@ public class Game
         get => _isOver;
         set {
             _isOver = value;
-            if (value)
-            {
-                Console.WriteLine($"Player {CurrentPlayer} wins!");
-            }
         }
     }
 
-    private readonly Stack<Hexagon> history = new();
+    private readonly Stack<(int, int)> history = new();
 
     public Game(int width, int height)
     {
         this.width = width;
         this.height = height;
+        freeFields = new HashSet<(int, int)>();
 
         // Initialize board
         board = new Hexagon[width, height];
@@ -41,6 +43,7 @@ public class Game
             for (int col = 0; col < height; col++)
             {
                 board[row, col] = new Hexagon();
+                freeFields.Add((row, col));
             }
         }
 
@@ -81,7 +84,8 @@ public class Game
             return false;
         }
 
-        history.Push(hex);
+        history.Push((row, col));
+        freeFields.Remove((row, col));
         hex.Owner = CurrentPlayer;
         IsOver = hex.Connects();
         if (!IsOver)
@@ -98,19 +102,34 @@ public class Game
         else {
             CurrentPlayer = CurrentPlayer == PlayerId.One ? PlayerId.Two : PlayerId.One;
         }
-        history.Pop().Owner = null;
+        (int row, int col) = history.Pop();
+        freeFields.Add((row, col));
+        board[row, col].Owner = null;
     }
 
-    public List<Hexagon> PossibleMoves()
+    public List<(int, int)> PossibleMoves()
     {
-        List<Hexagon> moves = new();
-        foreach (var hex in board)
+        List<(int, int)> moves = new();
+        for (int row = 0; row < width; row++)
         {
-            if (hex.Owner == null)
+            for (int col = 0; col < height; col++)
             {
-                moves.Add(hex);
+                if (board[row, col].Owner == null)
+                {   
+                
+                    moves.Add((row, col));
+                }
             }
         }
         return moves;
+    }
+
+    public (int, int)? RandomPossibleMove()
+    {
+        if (freeFields.Count == 0)
+        {
+            return null;
+        }
+        return freeFields.ElementAt(random.Next(freeFields.Count));
     }
 }
