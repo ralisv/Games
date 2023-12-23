@@ -10,7 +10,7 @@ class Program
         bool playWithBot = args.Length > 0 && args[0] == "bot";
         int cursorRow = 0;
         int cursorCol = 0;
-        var game = new Game(11, 11);
+        var game = new Game(8, 8);
         Agent agent = new(game);
 
         while (true)

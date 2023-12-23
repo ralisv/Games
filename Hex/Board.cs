@@ -23,12 +23,57 @@ public class Game
     public bool IsOver
     {
         get => _isOver;
-        set {
+        set
+        {
             _isOver = value;
         }
     }
 
     private readonly Stack<(int, int)> history = new();
+
+    int? AssignBorderId((int, int) hexCoords)
+    {
+        var (row, col) = hexCoords;
+        if (row == 0)
+        {
+            return 0;
+        }
+        if (row == height - 1)
+        {
+            return 1;
+        }
+        if (col == 0)
+        {
+            return 1;
+        }
+        if (col == width - 1)
+        {
+            return 0;
+        }
+        return null;
+    }
+
+    PlayerId? AssignBorderPlayer((int, int) hexCoords)
+    {
+        var (row, col) = hexCoords;
+        if (row == 0)
+        {
+            return PlayerId.One;
+        }
+        if (col == 0)
+        {
+            return PlayerId.Two;
+        }
+        if (row == height - 1)
+        {
+            return PlayerId.One;
+        }
+        if (col == width - 1)
+        {
+            return PlayerId.Two;
+        }
+        return null;
+    }
 
     public Game(int width, int height)
     {
@@ -42,8 +87,14 @@ public class Game
         {
             for (int col = 0; col < height; col++)
             {
-                board[row, col] = new Hexagon();
-                freeFields.Add((row, col));
+                Hexagon current = new(AssignBorderId((row, col)))
+                {
+                    Owner = AssignBorderPlayer((row, col))
+                };
+                if (current.Owner == null) {
+                    freeFields.Add((row, col));
+                }
+                board[row, col] = current;
             }
         }
 
@@ -95,11 +146,14 @@ public class Game
         return true;
     }
 
-    public void Undo() {
-        if (IsOver) {
+    public void Undo()
+    {
+        if (IsOver)
+        {
             IsOver = false;
         }
-        else {
+        else
+        {
             CurrentPlayer = CurrentPlayer == PlayerId.One ? PlayerId.Two : PlayerId.One;
         }
         (int row, int col) = history.Pop();
@@ -115,8 +169,8 @@ public class Game
             for (int col = 0; col < height; col++)
             {
                 if (board[row, col].Owner == null)
-                {   
-                
+                {
+
                     moves.Add((row, col));
                 }
             }

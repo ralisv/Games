@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Text;
+using System;
 
 
 static class UI
@@ -20,22 +21,10 @@ static class UI
     public static string Game(Game game, int cursorRow, int cursorCol)
     {
         var sb = new StringBuilder();
-        // Add top border
-        sb.Append(' ', 1);
-        for (int i = 0; i < game.width; i++)
-        {
-            sb.Append(Player(PlayerId.One));
-            sb.Append(' ');
-        }
-        sb.AppendLine();
 
         for (int row = 0; row < game.height; row++)
         {
             sb.Append(' ', row);
-
-            // Add left border
-            sb.Append(Player(PlayerId.Two));
-            sb.Append(' ');
 
             for (int col = 0; col < game.width; col++)
             {
@@ -49,23 +38,19 @@ static class UI
                 }
                 sb.Append(' ');
             }
-            sb.Append(Player(PlayerId.Two)); // Add right border
             sb.AppendLine();
         }
 
-        // Add bottom border
-        sb.Append(' ', game.height + 2);
-        for (int i = 0; i < game.width; i++)
-        {
-            sb.Append(Player(PlayerId.One));
-            sb.Append(' ');
-        }
         return sb.ToString();
     }
     public static string Cell (Game game, int cursorRow, int cursorCol, int row, int col)
     {
+        if (Util.InCorner((row, col), game.width, game.height))
+        {
+            return $" ";
+        }
         var hex = game.board[row, col];
-        bool isAdjacentToCursor = IsAdjacentToCursor(cursorRow, cursorCol, row, col);
+        bool isAdjacentToCursor = Util.IsAdjacentToCursor(cursorRow, cursorCol, row, col);
         if (hex.Owner != null)
         {
             return $"{Player(hex.Owner.Value, highlight: isAdjacentToCursor)}";
@@ -78,11 +63,15 @@ static class UI
 
     public static string Player(PlayerId player, bool highlight = false)
     {
-        if (player == PlayerId.One)
+        switch(player)
         {
-            return $"{(highlight ? Color.LightRed : Color.Red)}{PlayerSymbol}{Color.Reset}";
+            case PlayerId.One:
+                return $"{(highlight ? Color.LightRed : Color.Red)}{PlayerSymbol}{Color.Reset}";
+            case PlayerId.Two:
+                return $"{(highlight ? Color.LightBlue : Color.Blue)}{PlayerSymbol}{Color.Reset}";
+            default:
+                throw new Exception("Invalid player");
         }
-        return $"{(highlight ? Color.LightBlue : Color.Blue)}{PlayerSymbol}{Color.Reset}";
     }
 
     public static string Cursor(PlayerId player)
@@ -99,12 +88,5 @@ static class UI
         {
             return " ";
         }
-    }
-
-    public static bool IsAdjacentToCursor(int cursorRow, int cursorCol, int row, int col)
-    {
-        int colDelta = cursorCol - col;
-        int rowDelta = cursorRow - row;
-        return Hexagon.AdjacentCoords.Contains((rowDelta, colDelta));
     }
 }

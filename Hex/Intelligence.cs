@@ -137,11 +137,8 @@ public class Agent
             Iterate(root);
             iterations++;
         }
-        foreach (var child in root.Children!)
-        {
-            Console.WriteLine($"{child.move} UTC: {UTC(child)} visited {child.visitCount} times and won {child.winCount} times");
-        }
-        Console.WriteLine($"Iterations: {iterations}");
-        return root.Children.Aggregate((best, next) => next.visitCount > best.visitCount ? next : best).move;
+
+        Console.WriteLine($"Root node visited {root.visitCount} times and won {root.winCount} times");
+        return root.Children!.Aggregate((best, next) => next.visitCount > best.visitCount ? next : best).move;
     }
 }

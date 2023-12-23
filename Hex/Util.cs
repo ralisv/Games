@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 
-static class Util {
+static class Util
+{
     /// <summary>
     /// Returns sequence of coordinates from the cursor to the given coordinates, the adjacent elements
     /// differ in only one coordinate by only one point in total.
@@ -33,5 +35,21 @@ static class Util {
         }
         path.Add(destination);
         return path;
+    }
+
+    public static bool InCorner((int, int) hexCoords, int width, int height)
+    {
+        var (row, col) = hexCoords;
+        return (row == 0 && col == 0) ||
+            (row == 0 && col == width - 1) ||
+            (row == height - 1 && col == 0) ||
+            (row == height - 1 && col == width - 1);
+    }
+
+    public static bool IsAdjacentToCursor(int cursorRow, int cursorCol, int row, int col)
+    {
+        int colDelta = cursorCol - col;
+        int rowDelta = cursorRow - row;
+        return Hexagon.AdjacentCoords.Contains((rowDelta, colDelta));
     }
 }

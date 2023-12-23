@@ -19,7 +19,7 @@ public class Hexagon
         (1, 0),
     };
 
-
+    public readonly int? borderId;
     private PlayerId? owner = null;
 
     /// <summary>
@@ -41,27 +41,12 @@ public class Hexagon
     /// <summary>
     /// Adjacent hexagons, indexed by the direction they are in relation to this hexagon. Or null if there is border.
     /// </summary>
-    public Hexagon?[] neighbors = new Hexagon[6];
+    public Hexagon[] neighbors;
 
-    /// <summary>
-    /// Information about the position of the hexagon on the board. 
-    /// </summary>
-    /// <returns> true if the hexagon is adjacent to the left or upper border of the board </returns>
-    public bool TouchesUpLeft()
+    public Hexagon(int? borderId = null)
     {
-        return Owner == PlayerId.One && neighbors[0] == null // up
-                || Owner == PlayerId.Two && neighbors[2] == null; // left
-    }
-
-    /// <summary>
-    /// Information about the position of the hexagon on the board.
-    /// </summary>
-    /// <returns> true if the hexagon is adjacent to the right or bottom border of the board </returns>
-    public bool TouchesDownRight()
-    {
-        var player = Owner;
-        return player == PlayerId.One && neighbors[5] == null // down
-                || player == PlayerId.Two && neighbors[3] == null; // right
+        this.borderId = borderId;
+        neighbors = new Hexagon[6];
     }
 
     /// <summary>
@@ -71,8 +56,6 @@ public class Hexagon
     public bool Connects()
     {
         PlayerId player = Owner ?? throw new InvalidOperationException("Hexagon is not owned by a player");
-        bool upOrLeft = false;
-        bool downOrRight = false;
 
         // Optimization
         if (!neighbors.Any(hex => hex?.Owner == player))
@@ -80,25 +63,18 @@ public class Hexagon
             return false;
         }
 
+        HashSet<int> touchedBorders = new();
         HashSet<Hexagon> visited = new();
         Queue<Hexagon> queue = new();
         queue.Enqueue(this);
-        while (queue.Count > 0)
+
+        while (queue.Count > 0 && touchedBorders.Count < 2)
         {
             var current = queue.Dequeue();
-            if (current.TouchesUpLeft())
+            if (current.borderId != null)
             {
-                upOrLeft = true;
-
-            }
-            else if (current.TouchesDownRight())
-            {
-                downOrRight = true;
-            }
-
-            if (upOrLeft && downOrRight)
-            {
-                return true;
+                touchedBorders.Add(current.borderId.Value);
+                continue;
             }
 
             for (int i = 0; i < 6; i++)
@@ -111,6 +87,6 @@ public class Hexagon
                 }
             }
         }
-        return false;
+        return touchedBorders.Count == 2;
     }
 }
