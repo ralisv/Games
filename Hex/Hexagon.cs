@@ -30,7 +30,7 @@ public class Hexagon
         get => owner;
         set
         {
-            if (owner != null)
+            if (owner != null && value != null)
             {
                 throw new Exception("Hexagon is already owned by a player");
             }
