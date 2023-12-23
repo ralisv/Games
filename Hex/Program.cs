@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 
 
@@ -9,7 +10,9 @@ class Program
         bool playWithBot = args.Length > 0 && args[0] == "bot";
         int cursorRow = 0;
         int cursorCol = 0;
-        var game = new Game(7, 7);
+        var game = new Game(11, 11);
+        Agent agent = new(game);
+
         while (true)
         {   
             string precalculatedBoard = UI.Game(game, cursorRow, cursorCol);
@@ -24,9 +27,13 @@ class Program
 
             // Bot's turn
             if (game.CurrentPlayer == PlayerId.Two && playWithBot) {
-                var move = Agent.GetMove(game);
-                foreach ((int cursorRow, int cursorCol) coord in Agent.PathFromCursor((cursorRow, cursorCol), move))
+                var move = agent.GetMove(game);
+
+                var cursorMoves = Util.PathFromCursor((cursorRow, cursorCol), move);
+                foreach ((int cRow, int cCol) in cursorMoves)
                 {
+                    cursorRow = cRow;
+                    cursorCol = cCol;
                     Thread.Sleep(200);
                     precalculatedBoard = UI.Game(game, cursorRow, cursorCol);
                     Console.Clear();

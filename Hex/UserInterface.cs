@@ -52,8 +52,9 @@ static class UI
             sb.Append(Player(PlayerId.Two)); // Add right border
             sb.AppendLine();
         }
+
         // Add bottom border
-        sb.Append(' ', game.height + 1);
+        sb.Append(' ', game.height + 2);
         for (int i = 0; i < game.width; i++)
         {
             sb.Append(Player(PlayerId.One));
