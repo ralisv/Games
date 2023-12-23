@@ -8,18 +8,35 @@ public enum PlayerId { One, Two }
 
 public class Game
 {
+    /// <summary>
+    /// Random number generator.
+    /// </summary>
     static readonly Random random = new();
 
     public readonly int width;
+
     public readonly int height;
 
+    /// <summary>
+    /// The game board, indexed by row and column.
+    /// </summary>
     public readonly Hexagon[,] board;
 
+    /// <summary>
+    /// Set of coordinates of free fields.
+    /// </summary>
     HashSet<(int, int)> freeFields;
 
+    /// <summary>
+    /// The player that is currently playing or the player that won the game, if IsOver is true.
+    /// </summary>
     public PlayerId CurrentPlayer { get; private set; } = PlayerId.One;
 
     bool _isOver = false;
+
+    /// <summary>
+    /// True if the game is over, false otherwise. In case of a draw, the player that played last wins.
+    /// </summary>
     public bool IsOver
     {
         get => _isOver;
@@ -29,8 +46,16 @@ public class Game
         }
     }
 
+    /// <summary>
+    /// Stack of moves, used for undoing moves.
+    /// </summary>
     private readonly Stack<(int, int)> history = new();
 
+    /// <summary>
+    /// Returns border identifier to distinguish between opposite borders.
+    /// </summary>
+    /// <param name="hexCoords">Coordinates of the hexagon</param>
+    /// <returns>integer representing the border</returns>
     int? AssignBorderId((int, int) hexCoords)
     {
         var (row, col) = hexCoords;
@@ -87,6 +112,7 @@ public class Game
         {
             for (int col = 0; col < height; col++)
             {
+                // Initialize hexagon and borders
                 Hexagon current = new(AssignBorderId((row, col)))
                 {
                     Owner = AssignBorderPlayer((row, col))
@@ -117,11 +143,23 @@ public class Game
         }
     }
 
+    /// <summary>
+    /// Predicate to check if the given coordinates are within the bounds of the board.
+    /// </summary>
+    /// <param name="row"></param>
+    /// <param name="col"></param>
+    /// <returns>true if the given coordinates are within the bounds of the board, false otherwise</returns>
     public bool IsInBounds(int row, int col)
     {
         return row >= 0 && row < height && col >= 0 && col < width;
     }
 
+    /// <summary>
+    /// Plays a move for the current player at the given coordinates.
+    /// </summary>
+    /// <param name="row">row index</param>
+    /// <param name="col">column index</param>
+    /// <returns>true if the turn was valid, false otherwise</returns>
     public bool Play(int row, int col)
     {
         if (!IsInBounds(row, col) || IsOver)
@@ -146,6 +184,9 @@ public class Game
         return true;
     }
 
+    /// <summary>
+    /// Undoes the last move, single Play operation.
+    /// </summary>
     public void Undo()
     {
         if (IsOver)
@@ -161,6 +202,10 @@ public class Game
         board[row, col].Owner = null;
     }
 
+    /// <summary>
+    /// Searches the board for all possible moves.
+    /// </summary>
+    /// <returns>List of all possible moves in the current state of the game</returns>
     public List<(int, int)> PossibleMoves()
     {
         List<(int, int)> moves = new();
@@ -178,6 +223,10 @@ public class Game
         return moves;
     }
 
+    /// <summary>
+    /// Beware, this method has linear time complexity.
+    /// </summary>
+    /// <returns>Returns a random possible move</returns>
     public (int, int)? RandomPossibleMove()
     {
         if (freeFields.Count == 0)
