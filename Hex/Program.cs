@@ -4,7 +4,7 @@ using System.Threading;
 
 class Program
 {
-    static readonly int Dimension = 12;
+    static readonly int Dimension = 10;
     static readonly int WaitTime = 1000;
 
     static int Main(string[] args)
