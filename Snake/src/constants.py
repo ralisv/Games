@@ -1,10 +1,7 @@
-from typing import Tuple
+Position = tuple[int, int]
 
 
-Position = Tuple[int, int]
-
-
-class EDGES():
+class EDGES:
     WALL_HORIZONTAL = "──"
     WALL_VERTICAL = "│"
     WALL_TOP_LEFT = "┌──"
@@ -13,7 +10,7 @@ class EDGES():
     WALL_BOTTOM_RIGHT = "──┘"
 
 
-class CELLS():
+class CELLS:
     WALL = "⬜"
     SNAKE = "⚫"
     HEAD = "⚪"
@@ -21,7 +18,7 @@ class CELLS():
     FRUIT = "🍎"
 
 
-class DIRECTIONS():
+class DIRECTIONS:
     LEFT = (0, -1)
     RIGHT = (0, 1)
     UP = (-1, 0)

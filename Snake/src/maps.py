@@ -1,9 +1,21 @@
-from typing import Dict, List
-from constants import Position, DIRECTIONS
+from constants import DIRECTIONS, Position
 
 
-class Map():
-    def __init__(self, map: List[List[bool]], snake: List[Position], starting_direction: Position, fruits: int, speed: float = 1):
+class Map:
+    map: list[list[bool]]
+    snake: list[Position]
+    starting_direction: Position
+    fruits: int
+    speed: float
+
+    def __init__(
+        self,
+        map: list[list[bool]],
+        snake: list[Position],
+        starting_direction: Position,
+        fruits: int,
+        speed: float = 1,
+    ):
         self.map = map
         self.snake = snake
         self.starting_direction = starting_direction
@@ -11,19 +23,28 @@ class Map():
         self.speed = speed
 
     @staticmethod
-    def map_from_string(map: str) -> List[List[bool]]:
+    def map_from_string(map: str) -> list[list[bool]]:
+        """Converts a string representation of a map to a list of lists of booleans
+
+        Args:
+            map (str): The string representation of the map, see examples in the MAPS dict
+
+        Returns:
+            list[list[bool]]: The map as a list of lists of booleans
+        """
         return [[c == "." for c in row] for row in map.split("\n")]
 
-MAPS: Dict[str, Map] = {
-    "plain": Map(Map.map_from_string(
-            "....................\n" * 19 + \
-            "...................."),
+
+MAPS: dict[str, Map] = {
+    "plain": Map(
+        Map.map_from_string("....................\n" * 19 + "...................."),
         snake=[(0, 2), (0, 1)],
         starting_direction=DIRECTIONS.RIGHT,
         fruits=2,
-        speed=5),
-
-    "labyrint": Map(Map.map_from_string(
+        speed=5,
+    ),
+    "labyrint": Map(
+        Map.map_from_string(
             "..........................\n"
             "..######################..\n"
             "..#....................#..\n"
@@ -51,12 +72,13 @@ MAPS: Dict[str, Map] = {
             "..#.#.........########.#..\n"
             "..#....................#..\n"
             "..######################..\n"
-            ".........................."),
+            ".........................."
+        ),
         snake=[(0, 2), (0, 1)],
         starting_direction=DIRECTIONS.RIGHT,
         fruits=10,
-        speed=0.5),
-
+        speed=0.5,
+    ),
     "eggs": Map(
         Map.map_from_string(
             "....................\n"
@@ -89,11 +111,12 @@ MAPS: Dict[str, Map] = {
             "..#..............#..\n"
             "..################..\n"
             "....................\n"
-            "...................."),
+            "...................."
+        ),
         snake=[(1, 2), (1, 1)],
         starting_direction=DIRECTIONS.RIGHT,
-        fruits=4),
-
+        fruits=4,
+    ),
     "squares": Map(
         Map.map_from_string(
             "....................\n"
@@ -115,11 +138,12 @@ MAPS: Dict[str, Map] = {
             "..#..............#..\n"
             "..#######..#######..\n"
             "....................\n"
-            "...................."),
+            "...................."
+        ),
         snake=[(1, 2), (1, 1)],
         starting_direction=DIRECTIONS.RIGHT,
-        fruits=2),
-
+        fruits=2,
+    ),
     "geometrics": Map(
         Map.map_from_string(
             "...............................\n"
@@ -141,40 +165,42 @@ MAPS: Dict[str, Map] = {
             "...##.....................##...\n"
             "..#############.#############..\n"
             "...............................\n"
-            "..............................."),
+            "..............................."
+        ),
         snake=[(1, 2), (1, 1)],
         starting_direction=DIRECTIONS.RIGHT,
-        fruits=10),
-
-        "skull": Map(
+        fruits=10,
+    ),
+    "skull": Map(
         Map.map_from_string(
-                "######............######\n"
-                "####................####\n"
-                "###......######......###\n"
-                "##....############....##\n"
-                "#....##############....#\n"
-                "....################....\n"
-                "...###...######...###...\n"
-                "..###.....####.....###..\n"
-                "..###..............###..\n"
-                "..........#..#..........\n"
-                "..###.....#..#.....###..\n"
-                "..####...#....#...####..\n"
-                "..########....########..\n"
-                "..####################..\n"
-                "..####################..\n"
-                "...##..##..##..##..##...\n"
-                "...##..##..##..##..##...\n"
-                "........................\n"
-                "#....##..##..##..##....#\n"
-                "##...##..##..##..##...##\n"
-                "##....############....##\n"
-                "###...############...###\n"
-                "###.....########.....###\n"
-                "####................####\n"
-                "######............######"),
+            "######............######\n"
+            "####................####\n"
+            "###......######......###\n"
+            "##....############....##\n"
+            "#....##############....#\n"
+            "....################....\n"
+            "...###...######...###...\n"
+            "..###.....####.....###..\n"
+            "..###..............###..\n"
+            "..........#..#..........\n"
+            "..###.....#..#.....###..\n"
+            "..####...#....#...####..\n"
+            "..########....########..\n"
+            "..####################..\n"
+            "..####################..\n"
+            "...##..##..##..##..##...\n"
+            "...##..##..##..##..##...\n"
+            "........................\n"
+            "#....##..##..##..##....#\n"
+            "##...##..##..##..##...##\n"
+            "##....############....##\n"
+            "###...############...###\n"
+            "###.....########.....###\n"
+            "####................####\n"
+            "######............######"
+        ),
         snake=[(17, 3), (17, 4)],
         starting_direction=DIRECTIONS.RIGHT,
-        fruits=3),
-
+        fruits=3,
+    ),
 }
