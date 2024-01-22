@@ -1,4 +1,7 @@
 # ConnectFour Game with AI Bot
+![Alt text](2024-01.22.-01.00.png)
+
+![Alt text](2024-01.22.-01.05.png)
 ## Overview
 This is a ConnectFour game implemented in C# with an AI bot opponent. The AI bot uses the minimax algorithm with alpha-beta pruning to determine its moves. The game is played in a console window and uses Unicode characters to display the game board.
 ## How to Play
@@ -7,6 +10,7 @@ When it's your turn, use the arrow keys to choose a column and press space to pl
 ## AI Bot
 The AI bot uses the minimax algorithm with alpha-beta pruning to determine its moves. The minimax algorithm is a recursive algorithm used for decision making in game theory and artificial intelligence. Alpha-beta pruning is an optimization technique that reduces the number of nodes evaluated by the minimax algorithm.
 The AI bot evaluates the current state of the game and returns the best move for it to make.
+To play with bot, run the program with command line argument "bot"
 ## Code Structure
 The code is divided into several classes:
 Game: Represents a game of Connect Four. It contains the game board and the game logic.
