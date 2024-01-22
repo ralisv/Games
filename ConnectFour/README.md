@@ -1,7 +1,7 @@
 # ConnectFour Game with AI Bot
-![Alt text](2024-01.22.-01.00.png)
+![Alt text](./assets/screenshots/2024-01.22.-01.00.png)
 
-![Alt text](2024-01.22.-01.05.png)
+![Alt text](./assets/screenshots/2024-01.22.-01.05.png)
 ## Overview
 This is a ConnectFour game implemented in C# with an AI bot opponent. The AI bot uses the minimax algorithm with alpha-beta pruning to determine its moves. The game is played in a console window and uses Unicode characters to display the game board.
 ## How to Play
