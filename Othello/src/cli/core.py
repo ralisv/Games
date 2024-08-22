@@ -18,12 +18,25 @@ def initialize_screen(stdscr):
     stdscr.clear()
 
 
-def print_board(stdscr, board, cursor_row, cursor_col, current_player):
+def check_terminal_size(stdscr, board):
+    terminal_height, terminal_width = stdscr.getmaxyx()
+    required_height = board.height + 3  # 1 for information at the top, 2 for borders
+    required_width = (
+        board.width * 2 + 3
+    )  # 2 chars per cell, 2 for borders, 1 for safety
+
+    if terminal_height < required_height or terminal_width < required_width:
+        return False
+    return True
+
+
+def print_top_info(stdscr, text: str):
     _, terminal_width = stdscr.getmaxyx()
+    stdscr.addstr(0, 0, (text + " " * terminal_width)[: terminal_width - 1])
+    stdscr.refresh()
 
-    top_info = f"Current player: {'Black' if current_player == Cell.BLACK else 'White'}"
-    stdscr.addstr(0, 0, top_info + " " * (terminal_width - len(top_info) - 1))
 
+def print_board(stdscr, board, cursor_row, cursor_col, current_player):
     # Print top border
     stdscr.addstr(
         1, 0, TOP_LEFT_EDGE_LINE + HORIZONTAL_LINE * board.width + TOP_RIGHT_EDGE_LINE
@@ -57,11 +70,6 @@ def print_board(stdscr, board, cursor_row, cursor_col, current_player):
         BOTTOM_LEFT_EDGE_LINE + HORIZONTAL_LINE * board.width + BOTTOM_RIGHT_EDGE_LINE,
     )
 
-    stdscr.addstr(
-        board.height + 3,
-        0,
-        "Use arrow keys to move, Enter or Space to place disc, 'q' to quit",
-    )
     stdscr.refresh()
 
 
@@ -105,13 +113,6 @@ def move_cursor(stdscr, board, key, cursor_row, cursor_col, current_player):
         stdscr.refresh()
 
     return new_row, new_col
-
-
-def handle_no_valid_moves(stdscr, board, current_player):
-    stdscr.addstr(board.height + 3, 0, f"No valid moves for {current_player}")
-    stdscr.refresh()
-    stdscr.getch()  # Wait for a key press
-    return Cell.WHITE if current_player == Cell.BLACK else Cell.BLACK
 
 
 def initialize_board():
