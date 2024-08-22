@@ -2,7 +2,7 @@ import curses
 
 from board.board import Board
 from board.cell import Cell
-from cli.constants import AIM
+from cli.constants import *
 
 # Define color pair numbers
 BLACK_PAIR = 1
@@ -19,12 +19,18 @@ def initialize_screen(stdscr):
 
 
 def print_board(stdscr, board, cursor_row, cursor_col, current_player):
-    stdscr.clear()
-    height, width = stdscr.getmaxyx()
+    _, terminal_width = stdscr.getmaxyx()
+
+    top_info = f"Current player: {'Black' if current_player == Cell.BLACK else 'White'}"
+    stdscr.addstr(0, 0, top_info + " " * (terminal_width - len(top_info) - 1))
+
+    # Print top border
     stdscr.addstr(
-        0, 0, f"Current player: {'Black' if current_player == Cell.BLACK else 'White'}"
+        1, 0, TOP_LEFT_EDGE_LINE + HORIZONTAL_LINE * board.width + TOP_RIGHT_EDGE_LINE
     )
+
     for row in range(board.height):
+        stdscr.addstr(row + 2, 0, VERTICAL_LINE)  # Left border
         for col in range(board.width):
             char = Cell.EMPTY.value
             if board[row][col] == Cell.BLACK:
@@ -36,15 +42,23 @@ def print_board(stdscr, board, cursor_row, cursor_col, current_player):
                 color_pair = BLACK_PAIR if current_player == Cell.BLACK else WHITE_PAIR
                 stdscr.addstr(
                     row + 2,
-                    col * 2,
+                    col * 2 + 1,
                     char if char != Cell.EMPTY.value else AIM,
                     curses.color_pair(color_pair) | curses.A_REVERSE,
                 )
             else:
-                stdscr.addstr(row + 2, col * 2, char)
+                stdscr.addstr(row + 2, col * 2 + 1, char)
+        stdscr.addstr(row + 2, board.width * 2 + 1, VERTICAL_LINE)  # Right border
+
+    # Print bottom border
+    stdscr.addstr(
+        board.height + 2,
+        0,
+        BOTTOM_LEFT_EDGE_LINE + HORIZONTAL_LINE * board.width + BOTTOM_RIGHT_EDGE_LINE,
+    )
 
     stdscr.addstr(
-        height - 1,
+        board.height + 3,
         0,
         "Use arrow keys to move, Enter or Space to place disc, 'q' to quit",
     )
@@ -65,7 +79,7 @@ def move_cursor(stdscr, board, key, cursor_row, cursor_col, current_player):
     if (new_row, new_col) != (cursor_row, cursor_col):
         # Clear old cursor position
         old_char = board[cursor_row][cursor_col].value
-        stdscr.addstr(cursor_row + 2, cursor_col * 2, old_char)
+        stdscr.addstr(cursor_row + 2, cursor_col * 2 + 1, old_char)
 
         # Draw new cursor position
         new_char = (
@@ -76,7 +90,7 @@ def move_cursor(stdscr, board, key, cursor_row, cursor_col, current_player):
         color_pair = BLACK_PAIR if current_player == Cell.BLACK else WHITE_PAIR
         stdscr.addstr(
             new_row + 2,
-            new_col * 2,
+            new_col * 2 + 1,
             new_char,
             curses.color_pair(color_pair) | curses.A_REVERSE,
         )
