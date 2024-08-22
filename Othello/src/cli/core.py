@@ -12,8 +12,12 @@ WHITE_PAIR = 2
 def initialize_screen(stdscr):
     curses.start_color()
     curses.use_default_colors()
-    curses.init_pair(BLACK_PAIR, curses.COLOR_BLACK, curses.COLOR_WHITE)
-    curses.init_pair(WHITE_PAIR, curses.COLOR_WHITE, curses.COLOR_BLACK)
+    curses.init_pair(
+        BLACK_PAIR, curses.COLOR_WHITE, curses.COLOR_BLACK
+    )  # White text on black background
+    curses.init_pair(
+        WHITE_PAIR, curses.COLOR_BLACK, curses.COLOR_WHITE
+    )  # Black text on white background
     curses.curs_set(0)  # Hide the cursor
     stdscr.clear()
 
@@ -57,7 +61,7 @@ def print_board(stdscr, board, cursor_row, cursor_col, current_player):
                     row + 2,
                     col * 2 + 1,
                     char if char != Cell.EMPTY.value else AIM,
-                    curses.color_pair(color_pair) | curses.A_REVERSE,
+                    curses.color_pair(color_pair),
                 )
             else:
                 stdscr.addstr(row + 2, col * 2 + 1, char)
@@ -100,7 +104,7 @@ def move_cursor(stdscr, board, key, cursor_row, cursor_col, current_player):
             new_row + 2,
             new_col * 2 + 1,
             new_char,
-            curses.color_pair(color_pair) | curses.A_REVERSE,
+            curses.color_pair(color_pair),
         )
 
         # Update current player info
