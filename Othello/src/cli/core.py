@@ -115,10 +115,7 @@ def move_cursor(stdscr, board, key, cursor_row, cursor_col, current_player):
     return new_row, new_col
 
 
-def initialize_board():
-    board = Board(8, 8)
-    board[3][3] = Cell.WHITE
-    board[3][4] = Cell.BLACK
-    board[4][3] = Cell.BLACK
-    board[4][4] = Cell.WHITE
-    return board
+def hide_cursor(stdscr, board: Board, cursor_row: int, cursor_col: int):
+    stdscr.addstr(
+        cursor_row + 2, cursor_col * 2 + 1, board[cursor_row][cursor_col].value
+    )

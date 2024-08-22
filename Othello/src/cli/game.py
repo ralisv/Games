@@ -1,8 +1,9 @@
 import curses
 from time import sleep
 
-from board import Cell
+from board import Board, Cell
 from game import is_valid_move, put_disc
+from game.rules import can_move, is_game_over
 
 from .core import *
 
@@ -10,9 +11,10 @@ from .core import *
 def _main(stdscr):
     initialize_screen(stdscr)
 
-    board = initialize_board()
     current_player: Cell = Cell.BLACK
     cursor_row, cursor_col = 0, 0
+
+    board = Board(8, 8)
 
     while True:
         while not check_terminal_size(stdscr, board):
@@ -22,6 +24,22 @@ def _main(stdscr):
             except curses.error:
                 pass  # If even this fails, we can't do much
             sleep(0.1)
+
+        if is_game_over(board):
+            print_top_info(stdscr, "Game over")
+            hide_cursor(stdscr, board, cursor_row, cursor_col)
+            stdscr.refresh()
+            sleep(60)
+            break
+
+        if not can_move(board, current_player):
+            stdscr.clear()
+            print_top_info(
+                stdscr, f"No valid moves left for {current_player.name}, skipping turn"
+            )
+            sleep(1)
+
+            current_player = Cell.WHITE if current_player == Cell.BLACK else Cell.BLACK
 
         print_top_info(stdscr, f"Current player: {current_player.name}")
         print_board(stdscr, board, cursor_row, cursor_col, current_player)
