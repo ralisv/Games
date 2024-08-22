@@ -1,8 +1,8 @@
 import curses
 
-from board.board import Board
-from board.cell import Cell
-from cli.constants import *
+from board import Board, Cell
+
+from .constants import *
 
 # Define color pair numbers
 BLACK_PAIR = 1

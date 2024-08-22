@@ -1,10 +1,10 @@
 import curses
 from time import sleep
 
-from board.cell import Cell
-from cli.core import *
-from game.core import put_disc
-from game.rules import is_valid_move
+from board import Cell
+from game import is_valid_move, put_disc
+
+from .core import *
 
 
 def _main(stdscr):

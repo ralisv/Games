@@ -1,6 +1,6 @@
-from board.board import Board
-from board.cell import Cell
-from game.utils import Neighbors
+from board import Board, Cell
+
+from .utils import Neighbors
 
 
 def is_in_bounds(board: Board, row: int, col: int) -> bool:

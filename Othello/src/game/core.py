@@ -1,8 +1,7 @@
-from board.board import Board
-from board.cell import Cell
-from board.position import Position
-from game.rules import is_in_bounds
-from game.utils import Neighbors
+from board import Board, Cell, Position
+
+from .rules import is_in_bounds
+from .utils import Neighbors
 
 
 def get_outflanked_discs(board: Board, row: int, col: int) -> list[Position]:
