@@ -57,3 +57,15 @@ def is_valid_move(board: Board, row: int, col: int, current_player: Cell) -> boo
         and is_adjacent_to_opponent(board, row, col, current_player)
         and outflanks_opponent(board, row, col, current_player)
     )
+
+
+def can_move(board: Board, current_player: Cell) -> bool:
+    return any(
+        is_valid_move(board, row, col, current_player)
+        for row in range(board.height)
+        for col in range(board.width)
+    )
+
+
+def is_game_over(board: Board) -> bool:
+    return not can_move(board, Cell.BLACK) and not can_move(board, Cell.WHITE)
