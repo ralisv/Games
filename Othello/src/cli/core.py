@@ -4,10 +4,16 @@ from board.board import Board
 from board.cell import Cell
 from cli.constants import AIM
 
+# Define color pair numbers
+BLACK_PAIR = 1
+WHITE_PAIR = 2
+
 
 def initialize_screen(stdscr):
     curses.start_color()
     curses.use_default_colors()
+    curses.init_pair(BLACK_PAIR, curses.COLOR_BLACK, curses.COLOR_WHITE)
+    curses.init_pair(WHITE_PAIR, curses.COLOR_WHITE, curses.COLOR_BLACK)
     curses.curs_set(0)  # Hide the cursor
     stdscr.clear()
 
@@ -27,12 +33,20 @@ def print_board(stdscr, board, cursor_row, cursor_col, current_player):
                 char = Cell.WHITE.value
 
             if row == cursor_row and col == cursor_col:
-                stdscr.addstr(row + 2, col * 2, AIM, curses.A_REVERSE)
+                color_pair = BLACK_PAIR if current_player == Cell.BLACK else WHITE_PAIR
+                stdscr.addstr(
+                    row + 2,
+                    col * 2,
+                    char if char != Cell.EMPTY.value else AIM,
+                    curses.color_pair(color_pair) | curses.A_REVERSE,
+                )
             else:
                 stdscr.addstr(row + 2, col * 2, char)
 
     stdscr.addstr(
-        height - 1, 0, "Use arrow keys to move, Enter to place disc, 'q' to quit"
+        height - 1,
+        0,
+        "Use arrow keys to move, Enter or Space to place disc, 'q' to quit",
     )
     stdscr.refresh()
 
@@ -59,7 +73,13 @@ def move_cursor(stdscr, board, key, cursor_row, cursor_col, current_player):
             if board[new_row][new_col] == Cell.EMPTY
             else board[new_row][new_col].value
         )
-        stdscr.addstr(new_row + 2, new_col * 2, new_char, curses.A_REVERSE)
+        color_pair = BLACK_PAIR if current_player == Cell.BLACK else WHITE_PAIR
+        stdscr.addstr(
+            new_row + 2,
+            new_col * 2,
+            new_char,
+            curses.color_pair(color_pair) | curses.A_REVERSE,
+        )
 
         # Update current player info
         stdscr.addstr(
