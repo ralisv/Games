@@ -67,7 +67,7 @@ public class Agent
     public Agent(Game game, int waitTime)
     {
         this.game = game;
-        this.playerId = game.CurrentPlayer == PlayerId.One ? PlayerId.Two : PlayerId.One;
+        this.playerId = game.CurrentPlayer;
         this.waitTime = waitTime;
     }
 

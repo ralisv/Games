@@ -4,8 +4,8 @@ using System.Threading;
 
 class Program
 {
-    static readonly int Dimension = 10;
-    static readonly int WaitTime = 1000;
+    static readonly int Dimension = 8;
+    static readonly int WaitTime = 2500;
 
     static int Main(string[] args)
     {

@@ -30,7 +30,7 @@ public class Game
     /// <summary>
     /// The player that is currently playing or the player that won the game, if IsOver is true.
     /// </summary>
-    public PlayerId CurrentPlayer { get; private set; } = PlayerId.One;
+    public PlayerId CurrentPlayer { get; private set; } = PlayerId.Two;
 
     bool _isOver = false;
 
