@@ -1,4 +1,14 @@
-AIM = "・"
+import curses
+
+EMPTY = "  "
+WHITE_DISC = "🔴"  # "⚪"
+BLACK_DISC = "🔵"  # "⚫"
+
+WHITE_CURSOR_FG = curses.COLOR_RED
+WHITE_CURSOR_BG = curses.COLOR_RED
+BLACK_CURSOR_FG = curses.COLOR_BLUE
+BLACK_CURSOR_BG = curses.COLOR_BLUE
+
 VERTICAL_LINE = "┃"
 HORIZONTAL_LINE = "━━"
 TOP_LEFT_EDGE_LINE = "┏"

@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import Enum, auto
 
 
 class Cell(Enum):
-    EMPTY = "  "
-    WHITE = "🔴"  # "⚪"
-    BLACK = "🔵"  # "⚫"
+    EMPTY = auto()
+    WHITE = auto()
+    BLACK = auto()

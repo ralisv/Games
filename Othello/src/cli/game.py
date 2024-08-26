@@ -5,9 +5,10 @@ from game.core import can_play, get_scores, is_game_over
 from game.rules import is_valid_move
 
 from .core import *
+from .utils import check_terminal_size
 
 
-def _main(stdscr):
+def _main(stdscr: curses.window):
     initialize_screen(stdscr)
 
     current_player: Cell = Cell.BLACK
