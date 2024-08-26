@@ -13,10 +13,10 @@ def initialize_screen(stdscr):
     curses.start_color()
     curses.use_default_colors()
     curses.init_pair(
-        BLACK_PAIR, curses.COLOR_WHITE, curses.COLOR_BLACK
+        BLACK_PAIR, curses.COLOR_BLUE, curses.COLOR_BLUE
     )  # White text on black background
     curses.init_pair(
-        WHITE_PAIR, curses.COLOR_BLACK, curses.COLOR_WHITE
+        WHITE_PAIR, curses.COLOR_RED, curses.COLOR_RED
     )  # Black text on white background
     curses.curs_set(0)  # Hide the cursor
     stdscr.clear()
@@ -29,9 +29,7 @@ def check_terminal_size(stdscr, board):
         board.width * 2 + 3
     )  # 2 chars per cell, 2 for borders, 1 for safety
 
-    if terminal_height < required_height or terminal_width < required_width:
-        return False
-    return True
+    return terminal_height >= required_height and terminal_width >= required_width
 
 
 def print_top_info(stdscr, text: str):
