@@ -1,10 +1,7 @@
-from board import Board, Cell
+from game.board import Board
+from game.cell import Cell
 
-from .utils import Neighbors
-
-
-def is_in_bounds(board: Board, row: int, col: int) -> bool:
-    return 0 <= row < board.height and 0 <= col < board.width
+from .utils import neighbors
 
 
 def is_empty(board: Board, row: int, col: int) -> bool:
@@ -12,11 +9,11 @@ def is_empty(board: Board, row: int, col: int) -> bool:
 
 
 def outflanks_opponent(board: Board, row: int, col: int, current_player: Cell) -> bool:
-    if Cell == Cell.EMPTY:
+    if current_player == Cell.EMPTY:
         raise ValueError("Current player cell cannot be empty")
 
-    for nrow, ncol in Neighbors(row, col):
-        if not is_in_bounds(board, nrow, ncol):
+    for nrow, ncol in neighbors(row, col):
+        if not board.is_in_bounds(nrow, ncol):
             continue
 
         if board[nrow][ncol] == current_player:
@@ -24,7 +21,7 @@ def outflanks_opponent(board: Board, row: int, col: int, current_player: Cell) -
 
         row_dir, col_dir = nrow - row, ncol - col
 
-        while is_in_bounds(board, nrow, ncol) and board[nrow][ncol] != Cell.EMPTY:
+        while board.is_in_bounds(nrow, ncol) and board[nrow][ncol] != Cell.EMPTY:
             if board[nrow][ncol] == current_player:
                 return True
 
@@ -40,8 +37,8 @@ def is_adjacent_to_opponent(
     if Cell == Cell.EMPTY:
         raise ValueError("Current player cell cannot be empty")
 
-    for nrow, ncol in Neighbors(row, col):
-        if not is_in_bounds(board, nrow, ncol):
+    for nrow, ncol in neighbors(row, col):
+        if not board.is_in_bounds(nrow, ncol):
             continue
 
         if board[nrow][ncol] != current_player:
@@ -52,20 +49,8 @@ def is_adjacent_to_opponent(
 
 def is_valid_move(board: Board, row: int, col: int, current_player: Cell) -> bool:
     return (
-        is_in_bounds(board, row, col)
+        board.is_in_bounds(row, col)
         and is_empty(board, row, col)
         and is_adjacent_to_opponent(board, row, col, current_player)
         and outflanks_opponent(board, row, col, current_player)
     )
-
-
-def can_move(board: Board, current_player: Cell) -> bool:
-    return any(
-        is_valid_move(board, row, col, current_player)
-        for row in range(board.height)
-        for col in range(board.width)
-    )
-
-
-def is_game_over(board: Board) -> bool:
-    return not can_move(board, Cell.BLACK) and not can_move(board, Cell.WHITE)

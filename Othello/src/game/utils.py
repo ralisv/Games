@@ -1,3 +1,5 @@
+from typing import Generator
+
 DIRECTIONS = {
     (0, 1),  # right
     (1, 1),  # down-right
@@ -10,13 +12,6 @@ DIRECTIONS = {
 }
 
 
-class Neighbors:
-    def __init__(self, row: int, col: int) -> None:
-        self.row = row
-        self.col = col
-
-    from typing import Generator
-
-    def __iter__(self) -> Generator[tuple[int, int], None, None]:
-        for row_dir, col_dir in DIRECTIONS:
-            yield self.row + row_dir, self.col + col_dir
+def neighbors(row: int, col: int) -> Generator[tuple[int, int], None, None]:
+    for row_dir, col_dir in DIRECTIONS:
+        yield row + row_dir, col + col_dir

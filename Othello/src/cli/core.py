@@ -1,6 +1,7 @@
 import curses
 
-from board import Board, Cell
+from game.board import Board
+from game.cell import Cell
 
 from .constants import *
 
