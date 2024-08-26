@@ -3,6 +3,7 @@ from time import sleep
 
 from board import Board, Cell
 from game import is_valid_move, put_disc
+from game.core import count_discs
 from game.rules import can_move, is_game_over
 
 from .core import *
@@ -26,10 +27,6 @@ def _main(stdscr):
             sleep(0.1)
 
         if is_game_over(board):
-            print_top_info(stdscr, "Game over")
-            hide_cursor(stdscr, board, cursor_row, cursor_col)
-            stdscr.refresh()
-            sleep(60)
             break
 
         if not can_move(board, current_player):
@@ -37,7 +34,7 @@ def _main(stdscr):
             print_top_info(
                 stdscr, f"No valid moves left for {current_player.name}, skipping turn"
             )
-            sleep(1)
+            sleep(2)
 
             current_player = Cell.WHITE if current_player == Cell.BLACK else Cell.BLACK
 
@@ -61,6 +58,15 @@ def _main(stdscr):
                 )
             else:
                 continue
+
+    print_top_info(stdscr, "Game over")
+    hide_cursor(stdscr, board, cursor_row, cursor_col)
+    stdscr.refresh()
+    sleep(2)
+
+    white_score, black_score = count_discs(board)
+    print_top_info(stdscr, f"White: {white_score}, Black: {black_score}")
+    sleep(60)
 
 
 def main():

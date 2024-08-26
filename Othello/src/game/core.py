@@ -36,3 +36,10 @@ def put_disc(board: Board, row: int, col: int, current_player: Cell) -> None:
 
     for nrow, ncol in get_outflanked_discs(board, row, col):
         board[nrow][ncol] = current_player
+
+
+def count_discs(board: Board) -> tuple[int, int]:
+    return (
+        sum(row.count(Cell.BLACK) for row in board),
+        sum(row.count(Cell.WHITE) for row in board),
+    )
