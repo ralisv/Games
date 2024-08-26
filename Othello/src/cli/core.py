@@ -7,7 +7,7 @@ from .constants import *
 from .utils import get_cell_char
 
 
-def initialize_screen(stdscr):
+def initialize_screen(stdscr: curses.window):
     curses.start_color()
     curses.use_default_colors()
     curses.init_pair(Cell.BLACK.value, BLACK_CURSOR_FG, BLACK_CURSOR_BG)
@@ -16,13 +16,19 @@ def initialize_screen(stdscr):
     stdscr.clear()
 
 
-def print_top_info(stdscr, text: str):
+def print_top_info(stdscr: curses.window, text: str):
     _, terminal_width = stdscr.getmaxyx()
     stdscr.addstr(0, 0, (text + " " * terminal_width)[: terminal_width - 1])
     stdscr.refresh()
 
 
-def print_board(stdscr, board, cursor_row, cursor_col, current_player):
+def print_board(
+    stdscr: curses.window,
+    board: Board,
+    cursor_row: int,
+    cursor_col: int,
+    current_player: Cell,
+):
     # Print top border
     stdscr.addstr(
         1, 0, TOP_LEFT_EDGE_LINE + HORIZONTAL_LINE * board.width + TOP_RIGHT_EDGE_LINE
@@ -55,18 +61,30 @@ def print_board(stdscr, board, cursor_row, cursor_col, current_player):
     stdscr.refresh()
 
 
-def move_cursor(stdscr, board, key, cursor_row, cursor_col, current_player):
+def move_cursor(
+    stdscr: curses.window,
+    board: Board,
+    key: int,
+    cursor_row: int,
+    cursor_col: int,
+    current_player: Cell,
+):
     new_row, new_col = cursor_row, cursor_col
-    if key == curses.KEY_UP and cursor_row > 0:
-        new_row -= 1
-    elif key == curses.KEY_DOWN and cursor_row < board.height - 1:
-        new_row += 1
-    elif key == curses.KEY_LEFT and cursor_col > 0:
-        new_col -= 1
-    elif key == curses.KEY_RIGHT and cursor_col < board.width - 1:
-        new_col += 1
 
-    if (new_row, new_col) != (cursor_row, cursor_col):
+    match key:
+        case curses.KEY_UP:
+            new_row -= 1
+        case curses.KEY_DOWN:
+            new_row += 1
+        case curses.KEY_LEFT:
+            new_col -= 1
+        case curses.KEY_RIGHT:
+            new_col += 1
+
+    if board.is_in_bounds(new_row, new_col) and (new_row, new_col) != (
+        cursor_row,
+        cursor_col,
+    ):
         # Clear old cursor position
         old_char = get_cell_char(board[cursor_row][cursor_col])
         stdscr.addstr(cursor_row + 2, cursor_col * 2 + 1, old_char)
@@ -81,10 +99,12 @@ def move_cursor(stdscr, board, key, cursor_row, cursor_col, current_player):
         )
 
         stdscr.refresh()
-    return new_row, new_col
+        return new_row, new_col
+
+    return cursor_row, cursor_col
 
 
-def hide_cursor(stdscr, board: Board, cursor_row: int, cursor_col: int):
+def hide_cursor(stdscr: curses.window, board: Board, cursor_row: int, cursor_col: int):
     stdscr.addstr(
         cursor_row + 2, cursor_col * 2 + 1, get_cell_char(board[cursor_row][cursor_col])
     )
