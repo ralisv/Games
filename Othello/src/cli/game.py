@@ -45,7 +45,7 @@ def _main(stdscr: curses.window):
             break
 
         if key in [curses.KEY_UP, curses.KEY_DOWN, curses.KEY_LEFT, curses.KEY_RIGHT]:
-            cursor_row, cursor_col = move_cursor(
+            cursor_row, cursor_col = update_cursor(
                 stdscr, board, key, cursor_row, cursor_col, current_player
             )
 
