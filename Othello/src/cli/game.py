@@ -1,7 +1,10 @@
 import curses
 from time import sleep
 
+from game.board import Board
+from game.cell import Cell
 from game.core import can_play, get_scores, is_game_over
+from game.position import Position
 from game.rules import is_valid_move
 
 from .core import *
@@ -12,7 +15,7 @@ def _main(stdscr: curses.window):
     initialize_screen(stdscr)
 
     current_player: Cell = Cell.BLACK
-    cursor_row, cursor_col = 0, 0
+    cursor = Position(0, 0)
 
     board = Board(8, 8)
 
@@ -38,20 +41,18 @@ def _main(stdscr: curses.window):
             current_player = Cell.WHITE if current_player == Cell.BLACK else Cell.BLACK
 
         print_top_info(stdscr, f"Current player: {current_player.name}")
-        print_board(stdscr, board, cursor_row, cursor_col, current_player)
+        print_board(stdscr, board, cursor, current_player)
 
         key = stdscr.getch()
         if key == ord("q"):
             break
 
         if key in [curses.KEY_UP, curses.KEY_DOWN, curses.KEY_LEFT, curses.KEY_RIGHT]:
-            cursor_row, cursor_col = update_cursor(
-                stdscr, board, key, cursor_row, cursor_col, current_player
-            )
+            cursor = update_cursor(stdscr, board, key, cursor, current_player)
 
         if key in [ord(" "), 10]:
-            if is_valid_move(board, cursor_row, cursor_col, current_player):
-                board.put_disc(cursor_row, cursor_col, current_player)
+            if is_valid_move(board, cursor, current_player):
+                board.put_disc(cursor, current_player)
                 current_player = (
                     Cell.WHITE if current_player == Cell.BLACK else Cell.BLACK
                 )
@@ -59,7 +60,7 @@ def _main(stdscr: curses.window):
                 continue
 
     print_top_info(stdscr, "Game over")
-    hide_cursor(stdscr, board, cursor_row, cursor_col)
+    hide_cursor(stdscr, board, cursor)
     stdscr.refresh()
     sleep(2)
 

@@ -1,3 +1,5 @@
+from game.position import Position
+
 from .board import Board
 from .cell import Cell
 from .utils import neighbors
@@ -37,7 +39,7 @@ def outflanks_opponent(board: Board, row: int, col: int, current_player: Cell) -
     if current_player == Cell.EMPTY:
         raise ValueError("Current player cell cannot be empty")
 
-    for _ in board.get_outflanked_discs(row, col, current_player):
+    for _ in board.get_outflanked_discs(Position(row, col), current_player):
         return True
 
     return False
@@ -64,8 +66,8 @@ def is_adjacent_to_opponent(
     if Cell == Cell.EMPTY:
         raise ValueError("Current player cell cannot be empty")
 
-    for nrow, ncol in neighbors(row, col):
-        if not board.is_in_bounds(nrow, ncol):
+    for (nrow, ncol), _ in neighbors(row, col):
+        if not board.is_in_bounds(Position(nrow, ncol)):
             continue
 
         if board[nrow][ncol] != current_player:
@@ -74,7 +76,7 @@ def is_adjacent_to_opponent(
     return False
 
 
-def is_valid_move(board: Board, row: int, col: int, current_player: Cell) -> bool:
+def is_valid_move(board: Board, position: Position, current_player: Cell) -> bool:
     """
     Check if a move is valid according to Othello rules.
 
@@ -87,8 +89,9 @@ def is_valid_move(board: Board, row: int, col: int, current_player: Cell) -> boo
     Returns:
         bool: True if the move is valid, False otherwise.
     """
+    row, col = position
     return (
-        board.is_in_bounds(row, col)
+        board.is_in_bounds(Position(row, col))
         and is_empty(board, row, col)
         and is_adjacent_to_opponent(board, row, col, current_player)
         and outflanks_opponent(board, row, col, current_player)

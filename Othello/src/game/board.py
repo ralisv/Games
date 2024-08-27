@@ -37,63 +37,63 @@ class Board:
             yield row
 
     def get_outflanked_discs(
-        self, row: int, col: int, current_player: Cell
+        self, position: Position, current_player: Cell
     ) -> Generator[Position, None, None]:
         """
         Get the discs that will be outflanked if a disc is placed at the given position.
 
         Args:
-            row (int): Row index of the position.
-            col (int): Column index of the position.
+            position (Position): The position where the disc is to be placed.
+            current_player (Cell): The current player's cell type.
 
         Returns:
-            list[Position]: List of positions of the discs that will be outflanked.
+            Generator[Position, None, None]: Generator of positions of the discs that will be outflanked.
         """
-        current_player = self[row][col]
-
-        for nrow, ncol in neighbors(row, col):
-            if not self.is_in_bounds(nrow, ncol):
+        for neighbor, direction in neighbors(position.row, position.col):
+            if not self.is_in_bounds(neighbor):
                 continue
 
-            if self[nrow][ncol] == current_player:
+            if self[neighbor.row][neighbor.col] == current_player:
                 continue
 
-            row_dir, col_dir = nrow - row, ncol - col
             opponents_discs_in_direction: list[Position] = []
 
-            while self.is_in_bounds(nrow, ncol) and self[nrow][ncol] != Cell.EMPTY:
-                if self[nrow][ncol] == current_player:
+            current_pos = neighbor
+            while (
+                self.is_in_bounds(current_pos)
+                and self[current_pos.row][current_pos.col] != Cell.EMPTY
+            ):
+                if self[current_pos.row][current_pos.col] == current_player:
                     yield from opponents_discs_in_direction
                     break
 
-                opponents_discs_in_direction.append(Position(nrow, ncol))
+                opponents_discs_in_direction.append(current_pos)
 
-                nrow += row_dir
-                ncol += col_dir
+                current_pos = Position(
+                    current_pos.row + direction.row, current_pos.col + direction.col
+                )
 
-    def put_disc(self, row: int, col: int, current_player: Cell) -> None:
+    def put_disc(self, position: Position, current_player: Cell) -> None:
         """
         Put a disc at the given position and outflank the opponent's discs (does not check if the move is valid).
 
         Args:
-            row (int): Row index of the position.
-            col (int): Column index of the position.
+            position (Position): The position where the disc is to be placed.
             current_player (Cell): The player who is placing the disc.
         """
-        self[row][col] = current_player
+        self[position.row][position.col] = current_player
 
-        for nrow, ncol in self.get_outflanked_discs(row, col, current_player):
-            self[nrow][ncol] = current_player
+        for outflanked_pos in self.get_outflanked_discs(position, current_player):
+            self[outflanked_pos.row][outflanked_pos.col] = current_player
 
-    def is_in_bounds(self, row: int, col: int) -> bool:
+    def is_in_bounds(self, position: Position) -> bool:
         """
         Check if the given position is within the bounds of the board.
 
         Args:
-            row (int): Row index of the position.
-            col (int): Column index of the position.
+            position (Position): The position to check.
 
         Returns:
             bool: True if the position is within the bounds of the board, False otherwise.
         """
-        return 0 <= row < self.height and 0 <= col < self.width
+        return 0 <= position.row < self.height and 0 <= position.col < self.width

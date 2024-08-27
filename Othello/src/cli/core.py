@@ -2,6 +2,7 @@ import curses
 
 from game.board import Board
 from game.cell import Cell
+from game.position import Position
 
 from .constants import *
 from .utils import get_cell_char
@@ -39,8 +40,7 @@ def print_top_info(stdscr: curses.window, text: str) -> None:
 def print_board(
     stdscr: curses.window,
     board: Board,
-    cursor_row: int,
-    cursor_col: int,
+    cursor: Position,
     current_player: Cell,
 ) -> None:
     """
@@ -49,8 +49,7 @@ def print_board(
     Args:
         stdscr (curses.window): The standard screen window.
         board (Board): The game board.
-        cursor_row (int): Row index of the cursor.
-        cursor_col (int): Column index of the cursor.
+        cursor (Position): Position of the cursor.
         current_player (Cell): The current player.
     """
     # Print top border
@@ -63,8 +62,7 @@ def print_board(
         for col in range(board.width):
             char = get_cell_char(board[row][col])
 
-            if row == cursor_row and col == cursor_col:
-
+            if Position(row, col) == cursor:
                 stdscr.addstr(
                     row + 2,
                     col * 2 + 1,
@@ -89,10 +87,9 @@ def update_cursor(
     stdscr: curses.window,
     board: Board,
     key: int,
-    cursor_row: int,
-    cursor_col: int,
+    cursor: Position,
     current_player: Cell,
-) -> tuple[int, int]:
+) -> Position:
     """
     Move the cursor on the screen based on the key pressed.
 
@@ -100,60 +97,53 @@ def update_cursor(
         stdscr (curses.window): The standard screen window.
         board (Board): The game board.
         key (int): The key pressed by the user.
-        cursor_row (int): Row index of the cursor.
-        cursor_col (int): Column index of the cursor.
+        cursor (Position): Current position of the cursor.
         current_player (Cell): The current player.
 
     Returns:
-        tuple[int, int]: The new row and column index of the cursor.
+        Position: The new position of the cursor.
     """
-    new_row, new_col = cursor_row, cursor_col
+    new_cursor = cursor
 
     match key:
         case curses.KEY_UP:
-            new_row -= 1
+            new_cursor = Position(cursor.row - 1, cursor.col)
         case curses.KEY_DOWN:
-            new_row += 1
+            new_cursor = Position(cursor.row + 1, cursor.col)
         case curses.KEY_LEFT:
-            new_col -= 1
+            new_cursor = Position(cursor.row, cursor.col - 1)
         case curses.KEY_RIGHT:
-            new_col += 1
+            new_cursor = Position(cursor.row, cursor.col + 1)
 
-    if board.is_in_bounds(new_row, new_col) and (new_row, new_col) != (
-        cursor_row,
-        cursor_col,
-    ):
+    if board.is_in_bounds(new_cursor) and new_cursor != cursor:
         # Clear old cursor position
-        old_char = get_cell_char(board[cursor_row][cursor_col])
-        stdscr.addstr(cursor_row + 2, cursor_col * 2 + 1, old_char)
+        old_char = get_cell_char(board[cursor.row][cursor.col])
+        stdscr.addstr(cursor.row + 2, cursor.col * 2 + 1, old_char)
 
         # Draw new cursor position
-        new_char = get_cell_char(board[new_row][new_col])
+        new_char = get_cell_char(board[new_cursor.row][new_cursor.col])
         stdscr.addstr(
-            new_row + 2,
-            new_col * 2 + 1,
+            new_cursor.row + 2,
+            new_cursor.col * 2 + 1,
             new_char,
             curses.color_pair(current_player.value),
         )
 
         stdscr.refresh()
-        return new_row, new_col
+        return new_cursor
 
-    return cursor_row, cursor_col
+    return cursor
 
 
-def hide_cursor(
-    stdscr: curses.window, board: Board, cursor_row: int, cursor_col: int
-) -> None:
+def hide_cursor(stdscr: curses.window, board: Board, cursor: Position) -> None:
     """
     Hide the game's cursor from the screen.
 
     Args:
         stdscr (curses.window): The standard screen window.
         board (Board): The game board.
-        cursor_row (int): Row index of the cursor.
-        cursor_col (int): Column index of the cursor.
+        cursor (Position): Position of the cursor.
     """
     stdscr.addstr(
-        cursor_row + 2, cursor_col * 2 + 1, get_cell_char(board[cursor_row][cursor_col])
+        cursor.row + 2, cursor.col * 2 + 1, get_cell_char(board[cursor.row][cursor.col])
     )

@@ -1,3 +1,5 @@
+from game.position import Position
+
 from .board import Board
 from .cell import Cell
 from .rules import is_valid_move
@@ -28,7 +30,7 @@ def can_play(board: Board, current_player: Cell) -> bool:
         bool: True if the current player can make a valid move, False otherwise.
     """
     return any(
-        is_valid_move(board, row, col, current_player)
+        is_valid_move(board, Position(row, col), current_player)
         for row in range(board.height)
         for col in range(board.width)
     )
