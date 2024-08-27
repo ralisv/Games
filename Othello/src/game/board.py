@@ -1,6 +1,7 @@
 from typing import Generator
 
 from .cell import Cell
+from .core import get_opposing_player
 from .position import Position
 from .utils import neighbors
 
@@ -8,6 +9,12 @@ from .utils import neighbors
 class Board:
     """
     Represents the game board of Othello.
+    """
+
+    history: list[tuple[Position, list[Position]]] = []
+    """
+    History of the game, where each element is a tuple of the position where the disc was put
+    and the outflanked discs by result.
     """
 
     def __init__(self, height: int, width: int) -> None:
@@ -81,10 +88,26 @@ class Board:
             position (Position): The position where the disc is to be placed.
             current_player (Cell): The player who is placing the disc.
         """
-        self[position.row][position.col] = current_player
+        new_discs = list(self.get_outflanked_discs(position, current_player))
 
-        for outflanked_pos in self.get_outflanked_discs(position, current_player):
+        for outflanked_pos in new_discs:
             self[outflanked_pos.row][outflanked_pos.col] = current_player
+
+        self.history.append((position, new_discs))
+
+    def undo(self) -> None:
+        """
+        Undo the last move.
+        """
+        if not self.history:
+            raise ValueError("No moves to undo")
+
+        position, outflanked_discs = self.history.pop()
+        opponent = get_opposing_player(self[position.row][position.col])
+        self[position.row][position.col] = Cell.EMPTY
+
+        for outflanked_pos in outflanked_discs:
+            self[outflanked_pos.row][outflanked_pos.col] = opponent
 
     def is_in_bounds(self, position: Position) -> bool:
         """

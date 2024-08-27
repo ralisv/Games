@@ -50,3 +50,16 @@ def get_scores(board: Board) -> dict[Cell, int]:
         Cell.BLACK: sum(row.count(Cell.BLACK) for row in board),
         Cell.WHITE: sum(row.count(Cell.WHITE) for row in board),
     }
+
+
+def get_opposing_player(current_player: Cell) -> Cell:
+    """
+    Get the opposing player.
+
+    Args:
+        current_player (Cell): The current player.
+
+    Returns:
+        Cell: The opposing player.
+    """
+    return Cell.WHITE if current_player == Cell.BLACK else Cell.BLACK

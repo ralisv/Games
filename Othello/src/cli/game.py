@@ -3,7 +3,7 @@ from time import sleep
 
 from game.board import Board
 from game.cell import Cell
-from game.core import can_play, get_scores, is_game_over
+from game.core import can_play, get_opposing_player, get_scores, is_game_over
 from game.position import Position
 from game.rules import is_valid_move
 
@@ -38,7 +38,7 @@ def _main(stdscr: curses.window):
             )
             sleep(2)
 
-            current_player = Cell.WHITE if current_player == Cell.BLACK else Cell.BLACK
+            current_player = get_opposing_player(current_player)
 
         print_top_info(stdscr, f"Current player: {current_player.name}")
         print_board(stdscr, board, cursor, current_player)
