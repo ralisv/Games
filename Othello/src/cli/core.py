@@ -86,39 +86,27 @@ def print_board(
 def update_cursor(
     stdscr: curses.window,
     board: Board,
-    key: int,
-    cursor: Position,
+    new_cursor: Position,
+    current_cursor: Position,
     current_player: Cell,
 ) -> Position:
     """
-    Move the cursor on the screen based on the key pressed.
+    Move the cursor on the screen to the new position.
 
     Args:
         stdscr (curses.window): The standard screen window.
         board (Board): The game board.
-        key (int): The key pressed by the user.
-        cursor (Position): Current position of the cursor.
+        new_cursor (Position): The new position of the cursor.
+        current_cursor (Position): The current position of the cursor.
         current_player (Cell): The current player.
 
     Returns:
-        Position: The new position of the cursor.
+        Position: The new position of the cursor if valid, otherwise the current position.
     """
-    new_cursor = cursor
-
-    match key:
-        case curses.KEY_UP:
-            new_cursor = Position(cursor.row - 1, cursor.col)
-        case curses.KEY_DOWN:
-            new_cursor = Position(cursor.row + 1, cursor.col)
-        case curses.KEY_LEFT:
-            new_cursor = Position(cursor.row, cursor.col - 1)
-        case curses.KEY_RIGHT:
-            new_cursor = Position(cursor.row, cursor.col + 1)
-
-    if board.is_in_bounds(new_cursor) and new_cursor != cursor:
+    if board.is_in_bounds(new_cursor) and new_cursor != current_cursor:
         # Clear old cursor position
-        old_char = get_cell_char(board[cursor.row][cursor.col])
-        stdscr.addstr(cursor.row + 2, cursor.col * 2 + 1, old_char)
+        old_char = get_cell_char(board[current_cursor.row][current_cursor.col])
+        stdscr.addstr(current_cursor.row + 2, current_cursor.col * 2 + 1, old_char)
 
         # Draw new cursor position
         new_char = get_cell_char(board[new_cursor.row][new_cursor.col])
@@ -132,7 +120,7 @@ def update_cursor(
         stdscr.refresh()
         return new_cursor
 
-    return cursor
+    return current_cursor
 
 
 def hide_cursor(stdscr: curses.window, board: Board, cursor: Position) -> None:

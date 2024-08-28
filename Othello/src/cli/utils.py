@@ -1,4 +1,5 @@
 import curses
+import sys
 
 from game.board import Board
 from game.cell import Cell
@@ -17,3 +18,7 @@ def check_terminal_size(stdscr: curses.window, board: Board) -> bool:
 def get_cell_char(cell: Cell) -> str:
     mapping = {Cell.BLACK: BLACK_DISC, Cell.WHITE: WHITE_DISC, Cell.EMPTY: EMPTY}
     return mapping[cell]
+
+
+def against_bot() -> bool:
+    return sys.argv[1] == "--bot" if len(sys.argv) > 1 else False

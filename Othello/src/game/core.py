@@ -1,3 +1,5 @@
+from typing import Generator
+
 from game.position import Position
 
 from .board import Board
@@ -33,6 +35,27 @@ def can_play(board: Board, current_player: Cell) -> bool:
         is_valid_move(board, Position(row, col), current_player)
         for row in range(board.height)
         for col in range(board.width)
+    )
+
+
+def get_valid_moves(
+    board: Board, current_player: Cell
+) -> Generator[Position, None, None]:
+    """
+    Get the list of valid moves for the current player.
+
+    Args:
+        board (Board): The game board.
+        current_player (Cell): The player who is making the move.
+
+    Returns:
+        list[Position]: The list of valid moves for the current player.
+    """
+    return (
+        Position(row, col)
+        for row in range(board.height)
+        for col in range(board.width)
+        if is_valid_move(board, Position(row, col), current_player)
     )
 
 

@@ -1,9 +1,8 @@
 from typing import Generator
 
 from .cell import Cell
-from .core import get_opposing_player
 from .position import Position
-from .utils import neighbors
+from .utils import get_opposing_player, neighbors
 
 
 class Board:
@@ -90,6 +89,7 @@ class Board:
         """
         new_discs = list(self.get_outflanked_discs(position, current_player))
 
+        self[position.row][position.col] = current_player
         for outflanked_pos in new_discs:
             self[outflanked_pos.row][outflanked_pos.col] = current_player
 
