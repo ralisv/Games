@@ -23,7 +23,7 @@ def _main(stdscr: curses.window):
 
     board = Board(8, 8)
 
-    while True:
+    while not is_game_over(board):
         while not check_terminal_size(stdscr, board):
             try:
                 stdscr.clear()
@@ -31,9 +31,6 @@ def _main(stdscr: curses.window):
             except curses.error:
                 pass  # If even this fails, we can't do much
             sleep(0.1)
-
-        if is_game_over(board):
-            break
 
         if not can_play(board, current_player):
             stdscr.clear()
@@ -62,32 +59,22 @@ def _main(stdscr: curses.window):
         match key:
             case 113:  # q
                 return
-            case curses.KEY_UP:
-                new_cursor = Position(cursor.row - 1, cursor.col)
-                cursor = update_cursor(
-                    stdscr, board, new_cursor, cursor, current_player
-                )
-            case curses.KEY_DOWN:
-                new_cursor = Position(cursor.row + 1, cursor.col)
-                cursor = update_cursor(
-                    stdscr, board, new_cursor, cursor, current_player
-                )
-            case curses.KEY_LEFT:
-                new_cursor = Position(cursor.row, cursor.col - 1)
-                cursor = update_cursor(
-                    stdscr, board, new_cursor, cursor, current_player
-                )
-            case curses.KEY_RIGHT:
-                new_cursor = Position(cursor.row, cursor.col + 1)
-                cursor = update_cursor(
-                    stdscr, board, new_cursor, cursor, current_player
-                )
             case 32 | 10:  # Space or Enter
                 if is_valid_move(board, cursor, current_player):
                     board.put_disc(cursor, current_player)
                     current_player = get_opposing_player(current_player)
+                continue
+            case curses.KEY_UP:
+                new_cursor = Position(cursor.row - 1, cursor.col)
+            case curses.KEY_DOWN:
+                new_cursor = Position(cursor.row + 1, cursor.col)
+            case curses.KEY_LEFT:
+                new_cursor = Position(cursor.row, cursor.col - 1)
+            case curses.KEY_RIGHT:
+                new_cursor = Position(cursor.row, cursor.col + 1)
             case _:
                 continue
+        cursor = update_cursor(stdscr, board, new_cursor, cursor, current_player)
 
     print_top_info(stdscr, "Game over")
     print_board(stdscr, board, cursor, current_player)
