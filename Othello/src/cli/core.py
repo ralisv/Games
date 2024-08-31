@@ -2,6 +2,7 @@ import curses
 
 from game.board import Board
 from game.cell import Cell
+from game.core import get_valid_moves
 from game.position import Position
 
 from .constants import *
@@ -57,10 +58,16 @@ def print_board(
         1, 0, TOP_LEFT_EDGE_LINE + HORIZONTAL_LINE * board.width + TOP_RIGHT_EDGE_LINE
     )
 
+    valid_moves = set(get_valid_moves(board, current_player))
+
     for row in range(board.height):
         stdscr.addstr(row + 2, 0, VERTICAL_LINE)  # Left border
         for col in range(board.width):
-            char = get_cell_char(board[row][col])
+            cell = board[row][col]
+            char = get_cell_char(cell)
+
+            if Position(row, col) in valid_moves and cell == Cell.EMPTY:
+                char = VALID_MOVE_MARK
 
             if Position(row, col) == cursor:
                 stdscr.addstr(

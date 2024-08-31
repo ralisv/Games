@@ -3,6 +3,7 @@ import curses
 EMPTY = "  "
 WHITE_DISC = "🔴"  # "⚪"
 BLACK_DISC = "🔵"  # "⚫"
+VALID_MOVE_MARK = "・"
 
 WHITE_CURSOR_FG = curses.COLOR_RED
 WHITE_CURSOR_BG = curses.COLOR_RED
