@@ -1,9 +1,10 @@
 from agent.heuristic import evaluate_board, evaluate_move
 from game.board import Board
 from game.cell import Cell
-from game.core import get_valid_moves, is_game_over
+from game.core import get_scores, get_valid_moves, is_game_over
 from game.position import Position
 from game.rules import is_valid_move
+from game.utils import get_opposing_player
 
 INFINITY = 10**10
 
@@ -41,7 +42,8 @@ def alpha_beta(
         int: The best score.
     """
     if depth == 0 or is_game_over(board):
-        return evaluate_board(board, current_player)
+        score = get_scores(board)
+        return score[current_player] - score[get_opposing_player(current_player)]
 
     if current_player == Cell.WHITE:
         value = -INFINITY
